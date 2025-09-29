@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Button Would You Press?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('videos/IMG_20250923_225112_703.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(76, 175, 80, 0.7); /* Полупрозрачный зеленый overlay */
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+        
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .video-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .video-wrapper {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+        
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        
+        button {
+            padding: 14px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .red-btn { background-color: #e74c3c; color: white; }
+        .yellow-btn { background-color: #f1c40f; color: #333; }
+        .black-btn { background-color: #2c3e50; color: white; }
+        .orange-btn { background-color: #e67e22; color: white; }
+        .purple-btn { background-color: #9b59b6; color: white; }
+        .gray-btn { background-color: #95a5a6; color: white; }
+        .pink-btn { background-color: #e84393; color: white; }
+        .blue-btn { background-color: #3498db; color: white; }
+        .white-btn { background-color: #ffffff; color: #333; border: 2px solid #ddd; }
+        
+        .riddle-container {
+            display: none;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            border-left: 5px solid #3498db;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .riddle-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .answer {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #bdc3c7;
+        }
+        
+        .answer-text {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .image-wrapper {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .answer-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        
+        #reset-btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 16px 35px;
+            font-size: 1.3rem;
+            margin: 30px auto 0;
+            display: block;
+        }
+        
+        .active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .video-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            button {
+                font-size: 1.1rem;
+                padding: 12px 20px;
+            }
+            
+            .riddle-text {
+                font-size: 1.3rem;
+            }
+            
+            .video-wrapper {
+                height: 180px;
+            }
+            
+            .image-wrapper {
+                height: 160px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .video-wrapper {
+                height: 160px;
+            }
+            
+            .riddle-text {
+                font-size: 1.2rem;
+            }
+            
+            .answer-text {
+                font-size: 1.5rem;
+            }
+            
+            .image-wrapper {
+                height: 140px;
+            }
+            
+            .riddle-container {
+                padding: 20px;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WHICH BUTTON WOULD YOU PRESS?</h1>
+        
+        <div class="video-container">
+            <!-- Red Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-15.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="red-btn" onclick="toggleRiddle('red')">RED BUTTON</button>
+                <div id="red-riddle" class="riddle-container">
+                    <p class="riddle-text">I help you draw lines.<br>What am I?</p>
+                    <div id="red-answer" class="answer">
+                        <div class="answer-text">Ruler</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250919_232929_838.png" alt="Ruler" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yellow Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-10.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="yellow-btn" onclick="toggleRiddle('yellow')">YELLOW BUTTON</button>
+                <div id="yellow-riddle" class="riddle-container">
+                    <p class="riddle-text">I can rub out mistakes.<br>What am I?</p>
+                    <div id="yellow-answer" class="answer">
+                        <div class="answer-text">Rubber</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250919_233128_504.png" alt="Rubber" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Black Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-9.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="black-btn" onclick="toggleRiddle('black')">BLACK BUTTON</button>
+                <div id="black-riddle" class="riddle-container">
+                    <p class="riddle-text">I can help you write and draw.<br>What am I?</p>
+                    <div id="black-answer" class="answer">
+                        <div class="answer-text">Pencil</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250919_232418_790.png" alt="Pencil" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orange Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-8.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="orange-btn" onclick="toggleRiddle('orange')">ORANGE BUTTON</button>
+                <div id="orange-riddle" class="riddle-container">
+                    <p class="riddle-text">I am a small bag for your pencils.<br>What am I?</p>
+                    <div id="orange-answer" class="answer">
+                        <div class="answer-text">Pencil Case</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250919_232423_045.png" alt="Pencil Case" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Purple Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-7.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="purple-btn" onclick="toggleRiddle('purple')">PURPLE BUTTON</button>
+                <div id="purple-riddle" class="riddle-container">
+                    <p class="riddle-text">I help your pencil write well.<br>What am I?</p>
+                    <div id="purple-answer" class="answer">
+                        <div class="answer-text">Sharpener</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250922_144528_678.png" alt="Sharpener" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gray Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-6.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="gray-btn" onclick="toggleRiddle('gray')">GRAY BUTTON</button>
+                <div id="gray-riddle" class="riddle-container">
+                    <p class="riddle-text">I can carry your books.<br>What am I?</p>
+                    <div id="gray-answer" class="answer">
+                        <div class="answer-text">School bag</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250919_232606_526.png" alt="School bag" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pink Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-5.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="pink-btn" onclick="toggleRiddle('pink')">PINK BUTTON</button>
+                <div id="pink-riddle" class="riddle-container">
+                    <p class="riddle-text">I can stick paper together.<br>What am I?</p>
+                    <div id="pink-answer" class="answer">
+                        <div class="answer-text">Glue</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250922_150655_060.png" alt="Glue" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blue Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="blue-btn" onclick="toggleRiddle('blue')">BLUE BUTTON</button>
+                <div id="blue-riddle" class="riddle-container">
+                    <p class="riddle-text">You can read me every day.<br>What am I?</p>
+                    <div id="blue-answer" class="answer">
+                        <div class="answer-text">Book</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250922_153858_402.png" alt="Book" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- White Button -->
+            <div class="video-item">
+                <div class="video-wrapper">
+                    <video autoplay muted loop>
+                        <source src="videos/GigaChat_Video-12.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <button class="white-btn" onclick="toggleRiddle('white')">WHITE BUTTON</button>
+                <div id="white-riddle" class="riddle-container">
+                    <p class="riddle-text">I have many pages to write on.<br>What am I?</p>
+                    <div id="white-answer" class="answer">
+                        <div class="answer-text">Notebook</div>
+                        <div class="image-wrapper">
+                            <img src="videos/IMG_20250922_150645_496.png" alt="Notebook" class="answer-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="reset-btn" onclick="resetAll()">Start Again</button>
+    </div>
+
+    <script>
+        // Объект для отслеживания состояния каждой загадки
+        const riddleState = {
+            red: 0, // 0 - не показано, 1 - показана загадка, 2 - показан ответ
+            yellow: 0,
+            black: 0,
+            orange: 0,
+            purple: 0,
+            gray: 0,
+            pink: 0,
+            blue: 0,
+            white: 0
+        };
+        
+        function toggleRiddle(color) {
+            const riddleContainer = document.getElementById(`${color}-riddle`);
+            const answerElement = document.getElementById(`${color}-answer`);
+            
+            // Если загадка не показана
+            if (riddleState[color] === 0) {
+                // Скрываем все другие загадки
+                document.querySelectorAll('.riddle-container').forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                // Сбрасываем состояния всех загадок
+                for (let c in riddleState) {
+                    if (c !== color) {
+                        riddleState[c] = 0;
+                        document.getElementById(`${c}-answer`).style.display = 'none';
+                    }
+                }
+                
+                // Показываем выбранную загадку
+                riddleContainer.classList.add('active');
+                riddleState[color] = 1;
+            } 
+            // Если загадка показана, но ответ еще не показан
+            else if (riddleState[color] === 1) {
+                // Показываем ответ
+                answerElement.style.display = 'block';
+                riddleState[color] = 2;
+            }
+            // Если загадка и ответ уже показаны
+            else {
+                // Скрываем загадку
+                riddleContainer.classList.remove('active');
+                answerElement.style.display = 'none';
+                riddleState[color] = 0;
+            }
+        }
+        
+        function resetAll() {
+            // Скрываем все загадки и ответы
+            document.querySelectorAll('.riddle-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.answer').forEach(answer => {
+                answer.style.display = 'none';
+            });
+            
+            // Сбрасываем все состояния
+            for (let color in riddleState) {
+                riddleState[color] = 0;
+            }
+        }
+    </script>
+</body>
+</html>
