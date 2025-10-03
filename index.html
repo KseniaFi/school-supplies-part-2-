@@ -46,7 +46,7 @@
             }
             
             .images-grid, .phrases-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 10px;
             }
             
@@ -68,7 +68,7 @@
             }
             
             .images-grid, .phrases-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
             
             .phrase {
@@ -93,7 +93,7 @@
         .game-title {
             color: white;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             font-size: 2.5rem;
             text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff8c00, 0 0 40px #ff8c00;
             animation: glow 1.5s ease-in-out infinite alternate;
@@ -111,7 +111,7 @@
         .instruction {
             color: white;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 1.3rem;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             background: rgba(0, 0, 0, 0.5);
@@ -149,7 +149,7 @@
 
         .images-grid, .phrases-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 15px;
         }
 
@@ -385,6 +385,15 @@
                     imgElement.alt = `Classroom situation ${index + 1}`;
                     imgElement.classList.add('game-image');
                     imgElement.dataset.id = index;
+                    
+                    // Add error handling for images that don't load
+                    imgElement.onerror = function() {
+                        this.style.display = 'none';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.textContent = 'Image not found';
+                        errorDiv.style.cssText = 'width: 100%; height: 100%; background: #ccc; display: flex; align-items: center; justify-content: center; color: #666; font-weight: bold;';
+                        this.parentNode.insertBefore(errorDiv, this);
+                    };
                     
                     const matchedPhrasesContainer = document.createElement('div');
                     matchedPhrasesContainer.classList.add('matched-phrases-container');
