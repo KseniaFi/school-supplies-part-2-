@@ -1,1 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-Phrase Matching Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('Photos/IMG_20250923_225112_703.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .game-title {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .images-section, .phrases-section {
+                min-width: 100%;
+                padding: 15px;
+            }
+            
+            .images-grid, .phrases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .phrase {
+                font-size: 1rem;
+                padding: 12px 8px;
+                min-height: 70px;
+            }
+            
+            .reset-button {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .images-grid, .phrases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .phrase {
+                font-size: 0.9rem;
+                padding: 10px 6px;
+                min-height: 60px;
+            }
+        }
+
+        /* Полупрозрачный зеленый оверлей */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 128, 0, 0.3);
+            z-index: -1;
+        }
+
+        .game-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0f0, 0 0 40px #0f0;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0f0, 0 0 40px #0f0;
+            }
+            to {
+                text-shadow: 0 0 15px #fff, 0 0 25px #0f0, 0 0 35px #0f0, 0 0 45px #0f0;
+            }
+        }
+
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .images-section, .phrases-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .images-grid, .phrases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .game-image, .phrase {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .game-image {
+            aspect-ratio: 1;
+            object-fit: cover;
+            width: 100%;
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        .phrase {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            border: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            word-break: break-word;
+            transition: all 0.5s ease;
+        }
+
+        .game-image:hover, .phrase:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .selected {
+            border-color: #ffcc00 !important;
+            box-shadow: 0 0 15px #ffcc00;
+        }
+
+        .correct {
+            border-color: #00ff00 !important;
+            box-shadow: 0 0 20px #00ff00;
+            transition: all 0.3s ease;
+        }
+
+        .incorrect {
+            background-color: #ff6b6b !important;
+            color: white !important;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .matched-phrase {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            max-width: 90%;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .reset-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to bottom, #66BB6A, #388E3C);
+        }
+
+        .reset-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Контейнер для картинки и подписанных фраз */
+        .image-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .matched-phrases-container {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="game-title">Match Phrases to Images</h1>
+    
+    <div class="game-container">
+        <div class="images-section">
+            <h2 class="section-title">Images</h2>
+            <div class="images-grid" id="imagesGrid">
+                <!-- Images will be inserted here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="phrases-section">
+            <h2 class="section-title">Phrases</h2>
+            <div class="phrases-grid" id="phrasesGrid">
+                <!-- Phrases will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <button class="reset-button" id="resetButton">Start Again</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game data
+            const gameData = [
+                { 
+                    image: 'videos/Screenshot_20251003_123125_Samsung Internet.jpg', 
+                    phrases: ['Excuse me. May I borrow your pencil?'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_123158_Samsung Internet.jpg', 
+                    phrases: ['Sure. Here you are.'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_123136_Samsung Internet.jpg', 
+                    phrases: ['- Thank you.', '- You\'re welcome.'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_141209_Samsung Internet.jpg', 
+                    phrases: ['Excuse me. May I borrow your ruler?'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_141217_Samsung Internet.jpg', 
+                    phrases: ['- Here you are.', '- Thanks a lot!'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_141228_Samsung Internet.jpg', 
+                    phrases: ['- May I borrow your rubber, please?', 'Sure. Here you are.'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_141233_Samsung Internet.jpg', 
+                    phrases: ['Thanks!'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_141239_Samsung Internet.jpg', 
+                    phrases: ['Excuse me. May I borrow your pen?'] 
+                },
+                { 
+                    image: 'videos/Screenshot_20251003_123407_Samsung Internet.jpg', 
+                    phrases: ['Sure. Here you are.'] 
+                }
+            ];
+
+            // Get DOM elements
+            const imagesGrid = document.getElementById('imagesGrid');
+            const phrasesGrid = document.getElementById('phrasesGrid');
+            const resetButton = document.getElementById('resetButton');
+
+            // Game state variables
+            let selectedImage = null;
+            let selectedPhrase = null;
+            let matchedPairs = [];
+
+            // Create a shuffled list of all unique phrases
+            const allPhrases = [];
+            gameData.forEach(item => {
+                item.phrases.forEach(phrase => {
+                    if (!allPhrases.includes(phrase)) {
+                        allPhrases.push(phrase);
+                    }
+                });
+            });
+
+            // Shuffle the phrases array
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            const shuffledPhrases = shuffleArray([...allPhrases]);
+
+            // Initialize the game
+            function initGame() {
+                // Clear previous content
+                imagesGrid.innerHTML = '';
+                phrasesGrid.innerHTML = '';
+                matchedPairs = [];
+                
+                // Create image elements with containers
+                gameData.forEach((item, index) => {
+                    const container = document.createElement('div');
+                    container.classList.add('image-container');
+                    container.dataset.id = index;
+                    
+                    const imgElement = document.createElement('img');
+                    imgElement.src = item.image;
+                    imgElement.alt = `Image ${index + 1}`;
+                    imgElement.classList.add('game-image');
+                    imgElement.dataset.id = index;
+                    
+                    const matchedPhrasesContainer = document.createElement('div');
+                    matchedPhrasesContainer.classList.add('matched-phrases-container');
+                    matchedPhrasesContainer.id = `matched-phrases-${index}`;
+                    
+                    container.appendChild(imgElement);
+                    container.appendChild(matchedPhrasesContainer);
+                    
+                    imgElement.addEventListener('click', handleImageClick);
+                    imagesGrid.appendChild(container);
+                });
+                
+                // Create phrase elements (shuffled)
+                shuffledPhrases.forEach((phrase, index) => {
+                    const phraseElement = document.createElement('div');
+                    phraseElement.textContent = phrase;
+                    phraseElement.classList.add('phrase');
+                    phraseElement.dataset.id = index;
+                    phraseElement.dataset.text = phrase;
+                    
+                    phraseElement.addEventListener('click', handlePhraseClick);
+                    phrasesGrid.appendChild(phraseElement);
+                });
+            }
+
+            // Handle image click
+            function handleImageClick(event) {
+                const imageId = event.target.dataset.id;
+                
+                // Don't allow selection if already matched
+                if (matchedPairs.some(pair => pair.imageId === imageId)) {
+                    return;
+                }
+                
+                // Remove selection from all images
+                document.querySelectorAll('.game-image').forEach(img => {
+                    img.classList.remove('selected');
+                });
+                
+                // Select this image
+                event.target.classList.add('selected');
+                selectedImage = {
+                    element: event.target,
+                    id: imageId,
+                    correctPhrases: gameData[imageId].phrases
+                };
+                
+                // Check for match if both image and phrase are selected
+                checkForMatch();
+            }
+
+            // Handle phrase click
+            function handlePhraseClick(event) {
+                const phraseText = event.target.dataset.text;
+                
+                // Don't allow selection if already matched
+                if (matchedPairs.some(pair => pair.phraseText === phraseText)) {
+                    return;
+                }
+                
+                // Remove selection from all phrases
+                document.querySelectorAll('.phrase').forEach(phrase => {
+                    phrase.classList.remove('selected');
+                });
+                
+                // Select this phrase
+                event.target.classList.add('selected');
+                selectedPhrase = {
+                    element: event.target,
+                    text: phraseText
+                };
+                
+                // Check for match if both image and phrase are selected
+                checkForMatch();
+            }
+
+            // Check if selected image and phrase match
+            function checkForMatch() {
+                if (selectedImage && selectedPhrase) {
+                    // Check if the selected phrase is one of the correct phrases for the selected image
+                    const isMatch = selectedImage.correctPhrases.includes(selectedPhrase.text);
+                    
+                    if (isMatch) {
+                        // Correct match - move phrase to image
+                        movePhraseToImage(selectedImage, selectedPhrase);
+                        
+                        // Add to matched pairs
+                        matchedPairs.push({
+                            imageId: selectedImage.id,
+                            phraseText: selectedPhrase.text
+                        });
+                        
+                        // Remove selection
+                        selectedImage.element.classList.remove('selected');
+                        selectedPhrase.element.style.visibility = 'hidden';
+                        selectedImage = null;
+                        selectedPhrase = null;
+                        
+                        // Check if all pairs are matched
+                        if (matchedPairs.length === gameData.length) {
+                            setTimeout(() => {
+                                alert('Congratulations! You\'ve matched all pairs!');
+                            }, 500);
+                        }
+                    } else {
+                        // Incorrect match - highlight in red
+                        selectedPhrase.element.classList.add('incorrect');
+                        
+                        // Reset selection after a delay
+                        setTimeout(() => {
+                            if (selectedImage) {
+                                selectedImage.element.classList.remove('selected');
+                            }
+                            if (selectedPhrase) {
+                                selectedPhrase.element.classList.remove('selected', 'incorrect');
+                            }
+                            selectedImage = null;
+                            selectedPhrase = null;
+                        }, 1000);
+                    }
+                }
+            }
+
+            // Move phrase to image container
+            function movePhraseToImage(image, phrase) {
+                const phraseElement = phrase.element;
+                const imageContainer = image.element.parentElement;
+                const matchedPhrasesContainer = imageContainer.querySelector('.matched-phrases-container');
+                
+                // Create a new element for the matched phrase
+                const matchedPhraseElement = document.createElement('div');
+                matchedPhraseElement.textContent = phrase.text;
+                matchedPhraseElement.classList.add('matched-phrase');
+                
+                // Add to the matched phrases container
+                matchedPhrasesContainer.appendChild(matchedPhraseElement);
+            }
+
+            // Reset button event listener
+            resetButton.addEventListener('click', initGame);
+
+            // Initialize the game when page loads
+            initGame();
+        });
+    </script>
+</body>
+</html>
