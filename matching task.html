@@ -372,7 +372,7 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123158_Samsung Internet.jpg', 
-                    phrases: ['Sure. Here you are.'] 
+                    phrases: ['Sure. Here you are.', 'Sure', 'Here you are'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123136_Samsung Internet.jpg', 
@@ -388,7 +388,7 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141228_Samsung Internet.jpg', 
-                    phrases: ['- May I borrow your rubber, please? - Sure. Here you are.'] 
+                    phrases: ['- May I borrow your rubber, please? - Sure. Here you are.', 'Sure. Here you are.', 'Sure', 'Here you are'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141233_Samsung Internet.jpg', 
@@ -400,7 +400,7 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123407_Samsung Internet.jpg', 
-                    phrases: ['Sure. Here you are.'] 
+                    phrases: ['Sure. Here you are.', 'Sure', 'Here you are'] 
                 }
             ];
 
@@ -415,11 +415,17 @@
             let selectedPhrase = null;
             let matchedPairs = [];
 
-            // Create a list of all phrases
+            // Create a list of all unique phrases for display
             const allPhrases = [];
+            const phraseSet = new Set();
+            
             gameData.forEach(item => {
                 item.phrases.forEach(phrase => {
-                    allPhrases.push(phrase);
+                    // Add only unique phrases to the display list
+                    if (!phraseSet.has(phrase)) {
+                        phraseSet.add(phrase);
+                        allPhrases.push(phrase);
+                    }
                 });
             });
 
@@ -561,7 +567,8 @@
                         selectedPhrase = null;
                         
                         // Check if all pairs are matched
-                        if (matchedPairs.length === allPhrases.length) {
+                        const totalPossibleMatches = gameData.reduce((total, item) => total + item.phrases.length, 0);
+                        if (matchedPairs.length === totalPossibleMatches) {
                             setTimeout(() => {
                                 alert('Congratulations! You\'ve matched all pairs correctly!');
                             }, 500);
