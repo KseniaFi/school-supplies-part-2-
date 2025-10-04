@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Classroom Phrases Matching Game</title>
     <style>
         * {
             box-sizing: border-box;
@@ -112,12 +112,6 @@
             width: 100%;
             border: 3px solid transparent;
             position: relative;
-        }
-
-        /* Special styling for the pencil/question image */
-        .pencil-image {
-            object-fit: contain !important;
-            background-color: rgba(255, 255, 255, 0.8);
         }
 
         .phrase {
@@ -236,11 +230,17 @@
         }
 
         .matched-phrases-container {
-            margin-top: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
         }
 
         /* Responsive styles for mobile devices */
@@ -364,43 +364,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Game data - including the requested image for pencil question
+            // Game data with the new images
             const gameData = [
                 { 
-                    image: 'videos/Screenshot_20251003_123125_Samsung Internet.jpg', 
-                    phrases: ['Excuse me. May I borrow your pencil?']
+                    image: '1000052986.jpg', 
+                    phrases: ['Excuse me. May I borrow your pencil?'],
+                    // Special positioning for the pencil image
+                    phrasePositions: [
+                        { text: 'Excuse me. May I borrow your pencil?', top: '10%', left: '50%', transform: 'translateX(-50%)' }
+                    ]
                 },
                 { 
-                    image: 'videos/Screenshot_20251003_123158_Samsung Internet.jpg', 
-                    phrases: ['Sure. Here you are.'] 
+                    image: '1000053505.jpg', 
+                    phrases: ['- Here you are.', '- Thanks a lot!'],
+                    phrasePositions: [
+                        { text: '- Here you are.', top: '20%', left: '50%', transform: 'translateX(-50%)' },
+                        { text: '- Thanks a lot!', top: '80%', left: '50%', transform: 'translateX(-50%)' }
+                    ]
                 },
                 { 
-                    image: 'videos/Screenshot_20251003_123136_Samsung Internet.jpg', 
-                    phrases: ['- Thank you. - You\'re welcome.'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_141209_Samsung Internet.jpg', 
-                    phrases: ['Excuse me. May I borrow your ruler?'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_141217_Samsung Internet.jpg', 
-                    phrases: ['- Here you are. - Thanks a lot!'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_141228_Samsung Internet.jpg', 
-                    phrases: ['- May I borrow your rubber, please? - Sure. Here you are.'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_141233_Samsung Internet.jpg', 
-                    phrases: ['Thanks!'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_141239_Samsung Internet.jpg', 
-                    phrases: ['Excuse me. May I borrow your pen?'] 
-                },
-                { 
-                    image: 'videos/Screenshot_20251003_123407_Samsung Internet.jpg', 
-                    phrases: ['Sure. Here you are.'] 
+                    image: '1000053504.jpg', 
+                    phrases: ['Thanks!', 'Excuse me. May I borrow your pen?', 'Sure. Here you are.'],
+                    phrasePositions: [
+                        { text: 'Thanks!', top: '15%', left: '50%', transform: 'translateX(-50%)' },
+                        { text: 'Excuse me. May I borrow your pen?', top: '40%', left: '50%', transform: 'translateX(-50%)' },
+                        { text: 'Sure. Here you are.', top: '85%', left: '50%', transform: 'translateX(-50%)' }
+                    ]
                 }
             ];
 
@@ -415,7 +404,7 @@
             let selectedPhrase = null;
             let matchedPairs = [];
 
-            // Create a list of all phrases (including duplicates)
+            // Create a list of all phrases
             const allPhrases = [];
             gameData.forEach(item => {
                 item.phrases.forEach(phrase => {
@@ -506,7 +495,8 @@
                 selectedImage = {
                     element: event.target,
                     id: imageId,
-                    correctPhrases: gameData[imageId].phrases
+                    correctPhrases: gameData[imageId].phrases,
+                    phrasePositions: gameData[imageId].phrasePositions
                 };
                 
                 // Check for match if both image and phrase are selected
@@ -561,7 +551,7 @@
                         selectedPhrase = null;
                         
                         // Check if all pairs are matched
-                        if (matchedPairs.length === gameData.length) {
+                        if (matchedPairs.length === allPhrases.length) {
                             setTimeout(() => {
                                 alert('Congratulations! You\'ve matched all pairs correctly!');
                             }, 500);
@@ -585,7 +575,7 @@
                 }
             }
 
-            // Move phrase to image container
+            // Move phrase to image container with proper positioning
             function movePhraseToImage(image, phrase) {
                 const phraseElement = phrase.element;
                 const imageContainer = image.element.parentElement;
@@ -595,6 +585,17 @@
                 const matchedPhraseElement = document.createElement('div');
                 matchedPhraseElement.textContent = phrase.text;
                 matchedPhraseElement.classList.add('matched-phrase');
+                
+                // Apply positioning if defined for this phrase
+                if (image.phrasePositions) {
+                    const positionInfo = image.phrasePositions.find(p => p.text === phrase.text);
+                    if (positionInfo) {
+                        matchedPhraseElement.style.position = 'absolute';
+                        matchedPhraseElement.style.top = positionInfo.top;
+                        matchedPhraseElement.style.left = positionInfo.left;
+                        matchedPhraseElement.style.transform = positionInfo.transform;
+                    }
+                }
                 
                 // Add to the matched phrases container
                 matchedPhrasesContainer.appendChild(matchedPhraseElement);
