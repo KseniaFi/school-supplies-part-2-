@@ -153,6 +153,22 @@
             text-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
         }
 
+        .question-text {
+    font-size: 48px;
+    font-weight: bold;
+    color: orange;
+    text-shadow: 
+        0 0 10px orange,
+        0 0 20px orange,
+        0 0 30px orange;
+    text-align: center;
+    margin: 20px 0;
+    font-family: 'Times New Roman', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: glow 1.5s infinite alternate;
+        }
+
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
@@ -299,6 +315,8 @@
         <div class="video-wrapper">
             <video id="candyVideo" loop muted></video>
             <div class="question-mark">?</div>
+             <div class="question-text">IS THIS YOUR....?
+             </div>
         </div>
         <div class="answer" id="answer">
             <span id="answerText"></span>
