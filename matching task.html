@@ -24,100 +24,7 @@
             align-items: center;
         }
 
-        /* Адаптивные стили для мобильных устройств */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .game-title {
-                font-size: 1.8rem;
-                margin-bottom: 20px;
-            }
-            
-            .game-container {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .images-section, .phrases-section {
-                min-width: 100%;
-                padding: 15px;
-            }
-            
-            .images-grid, .phrases-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 10px;
-            }
-            
-            .phrase {
-                font-size: 1rem;
-                padding: 12px 8px;
-                min-height: 70px;
-            }
-            
-            .reset-button, .print-button {
-                padding: 12px 30px;
-                font-size: 1.1rem;
-            }
-            
-            .buttons-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .game-title {
-                font-size: 1.5rem;
-            }
-            
-            .images-grid, .phrases-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-            
-            .phrase {
-                font-size: 0.9rem;
-                padding: 10px 6px;
-                min-height: 60px;
-            }
-        }
-
-        /* Стили для печати */
-        @media print {
-            .reset-button, .print-button {
-                display: none;
-            }
-            
-            body {
-                background: white;
-                padding: 10px;
-            }
-            
-            body::before {
-                display: none;
-            }
-            
-            .images-section, .phrases-section {
-                background: white;
-                box-shadow: none;
-                border: 1px solid #ccc;
-            }
-            
-            .game-title, .section-title {
-                color: black;
-                text-shadow: none;
-                animation: none;
-            }
-            
-            .instruction {
-                color: black;
-                background: none;
-                text-shadow: none;
-            }
-        }
-
-        /* Полупрозрачный зеленый оверлей */
+        /* Semi-transparent green overlay */
         body::before {
             content: '';
             position: fixed;
@@ -205,6 +112,12 @@
             width: 100%;
             border: 3px solid transparent;
             position: relative;
+        }
+
+        /* Special styling for the pencil/question image */
+        .pencil-image {
+            object-fit: contain !important;
+            background-color: rgba(255, 255, 255, 0.8);
         }
 
         .phrase {
@@ -314,7 +227,7 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* Контейнер для картинки и подписанных фраз */
+        /* Container for image and matched phrases */
         .image-container {
             position: relative;
             display: flex;
@@ -328,6 +241,99 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
+        }
+
+        /* Responsive styles for mobile devices */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .game-title {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .images-section, .phrases-section {
+                min-width: 100%;
+                padding: 15px;
+            }
+            
+            .images-grid, .phrases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+            
+            .phrase {
+                font-size: 1rem;
+                padding: 12px 8px;
+                min-height: 70px;
+            }
+            
+            .reset-button, .print-button {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .images-grid, .phrases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .phrase {
+                font-size: 0.9rem;
+                padding: 10px 6px;
+                min-height: 60px;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .reset-button, .print-button {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                padding: 10px;
+            }
+            
+            body::before {
+                display: none;
+            }
+            
+            .images-section, .phrases-section {
+                background: white;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            
+            .game-title, .section-title {
+                color: black;
+                text-shadow: none;
+                animation: none;
+            }
+            
+            .instruction {
+                color: black;
+                background: none;
+                text-shadow: none;
+            }
         }
     </style>
 </head>
@@ -362,7 +368,8 @@
             const gameData = [
                 { 
                     image: 'videos/Screenshot_20251003_123125_Samsung Internet.jpg', 
-                    phrases: ['Excuse me. May I borrow your pencil?'] 
+                    phrases: ['Excuse me. May I borrow your pencil?'],
+                    specialClass: 'pencil-image' // Add special class for the pencil image
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123158_Samsung Internet.jpg', 
@@ -447,6 +454,12 @@
                     imgElement.src = item.image;
                     imgElement.alt = `Classroom situation ${index + 1}`;
                     imgElement.classList.add('game-image');
+                    
+                    // Add special class for the pencil image
+                    if (item.specialClass) {
+                        imgElement.classList.add(item.specialClass);
+                    }
+                    
                     imgElement.dataset.id = index;
                     
                     // Add error handling for images that don't load
