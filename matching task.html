@@ -368,8 +368,7 @@
             const gameData = [
                 { 
                     image: 'videos/Screenshot_20251003_123125_Samsung Internet.jpg', 
-                    phrases: ['Excuse me. May I borrow your pencil?'],
-                    specialClass: 'pencil-image' // Add special class for the pencil image
+                    phrases: ['Excuse me. May I borrow your pencil?']
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123158_Samsung Internet.jpg', 
@@ -377,7 +376,7 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123136_Samsung Internet.jpg', 
-                    phrases: ['thank you', 'thanks a lot', 'thanks'] 
+                    phrases: ['- Thank you. - You\'re welcome.'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141209_Samsung Internet.jpg', 
@@ -385,15 +384,15 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141217_Samsung Internet.jpg', 
-                    phrases: ['- Here you are.', '- Thanks a lot!'] 
+                    phrases: ['- Here you are. - Thanks a lot!'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141228_Samsung Internet.jpg', 
-                    phrases: ['- May I borrow your rubber, please?', 'Sure. Here you are.'] 
+                    phrases: ['- May I borrow your rubber, please? - Sure. Here you are.'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141233_Samsung Internet.jpg', 
-                    phrases: ['thank you', 'thanks a lot', 'thanks'] 
+                    phrases: ['Thanks!'] 
                 },
                 { 
                     image: 'videos/Screenshot_20251003_141239_Samsung Internet.jpg', 
@@ -401,7 +400,7 @@
                 },
                 { 
                     image: 'videos/Screenshot_20251003_123407_Samsung Internet.jpg', 
-                    phrases: ['Thank you. You\'re welcome.'] 
+                    phrases: ['Sure. Here you are.'] 
                 }
             ];
 
@@ -416,13 +415,11 @@
             let selectedPhrase = null;
             let matchedPairs = [];
 
-            // Create a shuffled list of all unique phrases
+            // Create a list of all phrases (including duplicates)
             const allPhrases = [];
             gameData.forEach(item => {
                 item.phrases.forEach(phrase => {
-                    if (!allPhrases.includes(phrase)) {
-                        allPhrases.push(phrase);
-                    }
+                    allPhrases.push(phrase);
                 });
             });
 
@@ -454,11 +451,6 @@
                     imgElement.src = item.image;
                     imgElement.alt = `Classroom situation ${index + 1}`;
                     imgElement.classList.add('game-image');
-                    
-                    // Add special class for the pencil image
-                    if (item.specialClass) {
-                        imgElement.classList.add(item.specialClass);
-                    }
                     
                     imgElement.dataset.id = index;
                     
