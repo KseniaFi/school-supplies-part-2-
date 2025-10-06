@@ -53,7 +53,7 @@
             cursor: pointer;
         }
 
-        .page-front, .page-back {
+        .page-front {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -63,10 +63,6 @@
             padding: 15px;
         }
 
-        .page-back {
-            transform: rotateY(180deg);
-        }
-
         .page-image {
             flex: 1;
             background-size: cover;
@@ -74,18 +70,6 @@
             border-radius: 5px;
             margin: 10px 0;
             position: relative;
-            cursor: pointer;
-        }
-
-        .page-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.03);
-            border-radius: 5px;
         }
 
         .page-text {
@@ -183,26 +167,6 @@
             font-weight: bold;
         }
 
-        .fullscreen-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .fullscreen-image {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
-        }
-
         @media (max-width: 768px) {
             .book {
                 height: 500px;
@@ -255,69 +219,93 @@
                     <h1 class="cover-title">Tom and Anna</h1>
                     <p class="cover-subtitle">The Fun Fruit Drawing Contest</p>
                 </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141412_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
+            </div>
+            
+            <!-- Page 1 -->
+            <div class="page page-2" data-page="2">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141412_Samsung Internet.jpg');"></div>
                     <div class="page-text">This is Tom and Anna. They are classmates.</div>
                 </div>
             </div>
             
             <!-- Page 2 -->
-            <div class="page page-2" data-page="2">
+            <div class="page page-3" data-page="3">
                 <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141420_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141420_Samsung Internet.jpg"></div>
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141420_Samsung Internet.jpg');"></div>
                     <div class="page-text">Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141427_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141427_Samsung Internet.jpg"></div>
-                    <div class="page-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
                 </div>
             </div>
             
             <!-- Page 3 -->
-            <div class="page page-3" data-page="3">
+            <div class="page page-4" data-page="4">
                 <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141433_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141433_Samsung Internet.jpg"></div>
-                    <div class="page-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141439_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141439_Samsung Internet.jpg"></div>
-                    <div class="page-text">Anna turns to her friend. "What's wrong, Tom?" she asks. "I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?" "Of course," says Anna. "Here you are."</div>
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141427_Samsung Internet.jpg');"></div>
+                    <div class="page-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
                 </div>
             </div>
             
             <!-- Page 4 -->
-            <div class="page page-4" data-page="4">
+            <div class="page page-5" data-page="5">
                 <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141447_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141447_Samsung Internet.jpg"></div>
-                    <div class="page-text">Anna gives Tom her sharp spare pencil.</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141452_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141452_Samsung Internet.jpg"></div>
-                    <div class="page-text">Tom is happy. He starts drawing.</div>
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141433_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
                 </div>
             </div>
             
             <!-- Page 5 -->
-            <div class="page page-5" data-page="5">
+            <div class="page page-6" data-page="6">
                 <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141500_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141500_Samsung Internet.jpg"></div>
-                    <div class="page-text">He draws a circle for his apple. It is almost perfect!</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141507_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141507_Samsung Internet.jpg"></div>
-                    <div class="page-text">Oh, dear! He makes a smudge on the paper! Tom looks at the clock. Only thirty seconds left! He needs help. "Can I borrow your rubber, please?" he asks. "Sure," says Anna. "Here you are."</div>
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141439_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Anna turns to her friend.<br>"What's wrong, Tom?" she asks.<br>"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"<br>"Of course," says Anna. "Here you are."</div>
                 </div>
             </div>
             
             <!-- Page 6 -->
-            <div class="page page-6" data-page="6">
+            <div class="page page-7" data-page="7">
                 <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141516_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141516_Samsung Internet.jpg"></div>
-                    <div class="page-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge. "Thank you," says Tom. "You're welcome," says Anna.</div>
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141447_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Anna gives Tom her sharp spare pencil.</div>
                 </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141521_Samsung Internet.jpg');" data-fullscreen="videos/Screenshot_20251005_141521_Samsung Internet.jpg"></div>
-                    <div class="page-text">Tom finishes his drawing just in time. Hurrah! Anna is happy to help her friend. Tom's drawing is definitely the best in the class! Hurrah!</div>
+            </div>
+            
+            <!-- Page 7 -->
+            <div class="page page-8" data-page="8">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141452_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Tom is happy. He starts drawing.</div>
+                </div>
+            </div>
+            
+            <!-- Page 8 -->
+            <div class="page page-9" data-page="9">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141500_Samsung Internet.jpg');"></div>
+                    <div class="page-text">He draws a circle for his apple. It is almost perfect!</div>
+                </div>
+            </div>
+            
+            <!-- Page 9 -->
+            <div class="page page-10" data-page="10">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141507_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Oh, dear! He makes a smudge on the paper!<br>Tom looks at the clock. Only thirty seconds left! He needs help.<br>"Can I borrow your rubber, please?" he asks.<br>"Sure," says Anna. "Here you are."</div>
+                </div>
+            </div>
+            
+            <!-- Page 10 -->
+            <div class="page page-11" data-page="11">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141516_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge.<br>"Thank you," says Tom.<br>"You're welcome," says Anna.</div>
+                </div>
+            </div>
+            
+            <!-- Page 11 -->
+            <div class="page page-12" data-page="12">
+                <div class="page-front">
+                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141521_Samsung Internet.jpg');"></div>
+                    <div class="page-text">Tom finishes his drawing just in time.<br>Hurrah! Anna is happy to help her friend.<br>Tom's drawing is definitely the best in the class! Hurrah!</div>
                     <div class="audio-container">
                         <audio controls style="width: 100%;">
                             <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mpeg">
@@ -328,28 +316,21 @@
             </div>
             
             <!-- Back Cover -->
-            <div class="page page-7" data-page="7">
-                <div class="page-front">
-                    <div class="page-text">The End</div>
-                </div>
-                <div class="page-back back-cover">
-                    <h2>Thank you for reading!</h2>
+            <div class="page page-13" data-page="13">
+                <div class="page-front back-cover">
+                    <h2>The End</h2>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="fullscreen-overlay" id="fullscreenOverlay">
-        <img src="" alt="Full screen image" class="fullscreen-image" id="fullscreenImage">
-    </div>
-    
-    <div class="navigation">
-        <button id="prev-btn" disabled>Previous</button>
-        <button id="next-btn">Next</button>
-    </div>
-    
-    <div class="page-counter">
-        Page <span id="current-page">1</span> of <span id="total-pages">7</span>
+        
+        <div class="navigation">
+            <button id="prev-btn" disabled>Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
+        
+        <div class="page-counter">
+            Page <span id="current-page">1</span> of <span id="total-pages">13</span>
+        </div>
     </div>
 
     <script>
@@ -359,15 +340,13 @@
             const nextBtn = document.getElementById('next-btn');
             const currentPageEl = document.getElementById('current-page');
             const totalPagesEl = document.getElementById('total-pages');
-            const fullscreenOverlay = document.getElementById('fullscreenOverlay');
-            const fullscreenImage = document.getElementById('fullscreenImage');
             
-            const totalPages = 7;
+            const totalPages = 13;
             let currentPage = 1;
             
             totalPagesEl.textContent = totalPages;
             
-            // Initialize pages position
+            // Initialize pages position [citation:1][citation:6]
             initializePages();
             
             function initializePages() {
@@ -377,7 +356,7 @@
                     const pageNumber = parseInt(page.dataset.page);
                     
                     if (pageNumber === 1) {
-                        // First page - show front
+                        // First page - show
                         page.style.transform = 'rotateY(0deg)';
                         page.style.zIndex = totalPages;
                     } else {
@@ -386,7 +365,7 @@
                         page.style.zIndex = totalPages - pageNumber;
                     }
                     
-                    // Add click event for page flipping
+                    // Add click event for page flipping [citation:3]
                     page.addEventListener('click', function(e) {
                         if (pageNumber === currentPage && e.offsetX > this.offsetWidth / 2) {
                             nextPage();
@@ -395,32 +374,14 @@
                         }
                     });
                 });
-                
-                // Add click events for fullscreen images
-                const pageImages = document.querySelectorAll('.page-image');
-                pageImages.forEach(img => {
-                    img.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const imageUrl = this.getAttribute('data-fullscreen');
-                        if (imageUrl) {
-                            fullscreenImage.src = imageUrl;
-                            fullscreenOverlay.style.display = 'flex';
-                        }
-                    });
-                });
             }
-            
-            // Close fullscreen when clicking the overlay
-            fullscreenOverlay.addEventListener('click', function() {
-                this.style.display = 'none';
-            });
             
             function nextPage() {
                 if (currentPage < totalPages) {
                     const currentPageEl = document.querySelector(`.page-${currentPage}`);
                     const nextPageEl = document.querySelector(`.page-${currentPage + 1}`);
                     
-                    // Flip current page
+                    // Flip current page [citation:1]
                     currentPageEl.style.transform = 'rotateY(-180deg)';
                     currentPageEl.style.zIndex = totalPages - currentPage;
                     
@@ -461,7 +422,7 @@
             prevBtn.addEventListener('click', prevPage);
             nextBtn.addEventListener('click', nextPage);
             
-            // Keyboard navigation
+            // Keyboard navigation [citation:3]
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'ArrowRight') {
                     nextPage();
@@ -475,4 +436,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
