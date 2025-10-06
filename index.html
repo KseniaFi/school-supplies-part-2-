@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книга с озвучкой</title>
+    <style>
+        /* (Весь ваш предыдущий CSS стиль остается здесь без изменений) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f5f5;
+            font-family: 'Georgia', serif;
+            display: flex;
+            flex-direction: column; /* Меняем на колонку для размещения плеера под книгой */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            perspective: 1000px;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .book-container {
+            width: 90vw;
+            height: 70vh;
+            max-width: 800px;
+            max-height: 600px;
+            position: relative;
+            transform-style: preserve-3d;
+            margin-bottom: 30px; /* Добавляем отступ снизу перед плеером */
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease-in-out;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .page-image {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .page-image.loaded {
+            opacity: 1;
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Page positioning */
+        .page[data-page="cover"] { z-index: 10; }
+        .page[data-page="1"] { z-index: 9; }
+        .page[data-page="2"] { z-index: 8; }
+        .page[data-page="3"] { z-index: 7; }
+        .page[data-page="4"] { z-index: 6; }
+        .page[data-page="5"] { z-index: 5; }
+        .page[data-page="6"] { z-index: 4; }
+        .page[data-page="7"] { z-index: 3; }
+        .page[data-page="8"] { z-index: 2; }
+        .page[data-page="9"] { z-index: 1; }
+
+        /* Flipped page state */
+        .flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Navigation buttons */
+        .navigation {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            font-family: 'Georgia', serif;
+        }
+
+        .nav-btn:hover {
+            background-color: #6a1cb0;
+        }
+
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            color: #8a2be2;
+            z-index: 1000;
+        }
+
+        /* Стили для аудиоплеера */
+        .audio-player-container {
+            text-align: center;
+            width: 90vw;
+            max-width: 600px;
+            padding: 20px;
+            background: linear-gradient(135deg, #8a2be2, #6a1cb0); /* Градиент в стиле книги */
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .audio-title {
+            font-family: 'Georgia', serif;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        audio {
+            width: 100%;
+            outline: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Стилизация для WebKit браузеров (Chrome, Safari) */
+        audio::-webkit-media-controls-panel {
+            background-color: #f0f0f0;
+        }
+
+        audio::-webkit-media-controls-play-button {
+            background-color: #8a2be2;
+            border-radius: 50%;
+        }
+
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #333;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Mobile adaptation */
+        @media (max-width: 768px) {
+            .book-container {
+                width: 95vw;
+                height: 80vh;
+            }
+            
+            body {
+                perspective: 500px;
+            }
+
+            .story-text {
+                font-size: 1em;
+            }
+
+            .audio-player-container {
+                width: 95vw;
+                padding: 15px;
+            }
+
+            .audio-title {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-container {
+                width: 98vw;
+                height: 85vh;
+            }
+            
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .story-text {
+                font-size: 0.9em;
+            }
+
+            .audio-player-container {
+                width: 98vw;
+                padding: 10px;
+            }
+
+            .audio-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">Загружаем книгу...</div>
+    
+    <div class="book-container" style="display: none;">
+        <div class="book">
+            <!-- Cover -->
+            <div class="page" data-page="cover">
+                <div class="front" style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4);">
+                    <h1 style="font-size: 2.5em; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">The Fruit Drawing Contest</h1>
+                    <p style="font-size: 1.5em; color: white; margin-top: 20px;">A Story of Tom and Anna</p>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>This is Tom and Anna. They are classmates.</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Page 1 -->
+            <div class="page" data-page="1">
+                <div class="front">
+                    <div class="story-text">
+                        <p>Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141420_Samsung Internet.jpg"></div>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141427_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Page 2 -->
+            <div class="page" data-page="2">
+                <div class="front">
+                    <div class="story-text">
+                        <p>Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141433_Samsung Internet.jpg"></div>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>Anna turns to her friend. "What's wrong, Tom?" she asks. "I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?" "Of course," says Anna. "Here you are."</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141439_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Page 3 -->
+            <div class="page" data-page="3">
+                <div class="front">
+                    <div class="story-text">
+                        <p>Anna gives Tom her sharp spare pencil.</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141447_Samsung Internet.jpg"></div>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>Tom is happy. He starts drawing.</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141452_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Page 4 -->
+            <div class="page" data-page="4">
+                <div class="front">
+                    <div class="story-text">
+                        <p>He draws a circle for his apple. It is almost perfect!</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141500_Samsung Internet.jpg"></div>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>Oh, dear! He makes a smudge on the paper! Tom looks at the clock. Only thirty seconds left! He needs help. "Can I borrow your rubber, please?" he asks. "Sure," says Anna. "Here you are."</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141507_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Page 5 -->
+            <div class="page" data-page="5">
+                <div class="front">
+                    <div class="story-text">
+                        <p>Tom uses Anna's cloud-shaped rubber. He rubs out the smudge. "Thank you," says Tom. "You're welcome," says Anna.</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141516_Samsung Internet.jpg"></div>
+                </div>
+                <div class="back">
+                    <div class="story-text">
+                        <p>Tom finishes his drawing just in time. Hurrah! Anna is happy to help her friend.</p>
+                    </div>
+                    <div class="page-image" data-src="videos/Screenshot_20251005_141521_Samsung Internet.jpg"></div>
+                </div>
+            </div>
+            
+            <!-- Last Page -->
+            <div class="page" data-page="6">
+                <div class="front">
+                    <div class="story-text">
+                        <p>Tom's drawing is definitely the best in the class! Hurrah!</p>
+                        <p style="margin-top: 30px; font-style: italic;">The End</p>
+                    </div>
+                    <div style="width: 100%; height: 60%; background-image: url('videos/Screenshot_20251005_141521_Samsung Internet.jpg'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                </div>
+                <div class="back" style="background: linear-gradient(135deg, #4ecdc4, #ff6b6b); justify-content: center;">
+                    <h2 style="color: white; font-size: 2em;">Congratulations!</h2>
+                    <p style="color: white; font-size: 1.2em; margin-top: 20px;">You've finished the story</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation buttons -->
+        <div class="navigation">
+            <button id="prev-btn" class="nav-btn" disabled>Back</button>
+            <button id="next-btn" class="nav-btn">Next</button>
+        </div>
+    </div>
+
+    <!-- Контейнер для аудиоплеера -->
+    <div class="audio-player-container">
+        <div class="audio-title">🎧 Аудиоозвучка истории</div>
+        <audio controls>
+            <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mp3">
+            Ваш браузер не поддерживает элемент audio. Попробуйте обновить браузер.
+        </audio>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingElement = document.querySelector('.loading');
+            const bookContainer = document.querySelector('.book-container');
+            const pages = document.querySelectorAll('.page');
+            const pageImages = document.querySelectorAll('.page-image');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentPage = 0;
+            const totalPages = pages.length;
+            
+            // Function to preload images
+            function preloadImages() {
+                return new Promise((resolve, reject) => {
+                    let loadedCount = 0;
+                    const totalImages = pageImages.length;
+                    
+                    if (totalImages === 0) {
+                        resolve();
+                        return;
+                    }
+                    
+                    pageImages.forEach(imgElement => {
+                        const imgSrc = imgElement.getAttribute('data-src');
+                        const img = new Image();
+                        
+                        img.onload = function() {
+                            imgElement.style.backgroundImage = `url('${imgSrc}')`;
+                            imgElement.classList.add('loaded');
+                            loadedCount++;
+                            
+                            if (loadedCount === totalImages) {
+                                resolve();
+                            }
+                        };
+                        
+                        img.onerror = function() {
+                            console.error(`Failed to load image: ${imgSrc}`);
+                            // Placeholder for failed images
+                            imgElement.style.background = '#f0f0f0';
+                            imgElement.style.display = 'flex';
+                            imgElement.innerHTML = '<p>Изображение не найдено</p>';
+                            imgElement.classList.add('loaded');
+                            loadedCount++;
+                            
+                            if (loadedCount === totalImages) {
+                                resolve();
+                            }
+                        };
+                        
+                        img.src = imgSrc;
+                    });
+                });
+            }
+            
+            // Function to update button states
+            function updateButtons() {
+                prevBtn.disabled = currentPage === 0;
+                nextBtn.disabled = currentPage === totalPages - 1;
+            }
+            
+            // Function to flip to next page
+            function flipNext() {
+                if (currentPage < totalPages - 1) {
+                    pages[currentPage].classList.add('flipped');
+                    currentPage++;
+                    updateButtons();
+                }
+            }
+            
+            // Function to flip to previous page
+            function flipPrev() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    pages[currentPage].classList.remove('flipped');
+                    updateButtons();
+                }
+            }
+            
+            // Initialize the book after images are loaded
+            preloadImages().then(() => {
+                // Hide loading indicator and show book
+                loadingElement.style.display = 'none';
+                bookContainer.style.display = 'block';
+                
+                // Add click handlers to each page (forward only)
+                pages.forEach((page, index) => {
+                    page.addEventListener('click', function() {
+                        if (index === currentPage) {
+                            flipNext();
+                        }
+                    });
+                });
+                
+                // Button handlers
+                prevBtn.addEventListener('click', flipPrev);
+                nextBtn.addEventListener('click', flipNext);
+                
+                // Initialize button states
+                updateButtons();
+            }).catch(error => {
+                console.error('Error loading images:', error);
+                loadingElement.textContent = 'Ошибка загрузки книги. Пожалуйста, обновите страницу.';
+            });
+        });
+    </script>
+</body>
+</html>
