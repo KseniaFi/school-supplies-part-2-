@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tom and Anna - Fun Fruit Drawing Contest</title>
+    
+    <!-- Подключение необходимых библиотек -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.1/turn.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -19,84 +24,60 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #8e9eab, #eef2f3);
             padding: 20px;
-            color: #333;
         }
 
         .book-container {
-            width: 90%;
+            width: 95%;
             max-width: 900px;
-            perspective: 1500px;
             position: relative;
         }
 
-        .book {
+        #flipbook {
             width: 100%;
             height: 600px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.5s;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            border-radius: 5px;
         }
 
         .page {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            transform-origin: left center;
-            transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
-            border-radius: 5px 10px 10px 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             background-color: white;
-            overflow: hidden;
-        }
-
-        .page-front, .page-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .page-back {
-            transform: rotateY(180deg);
-        }
-
-        .page-image {
-            flex: 1;
             background-size: cover;
             background-position: center;
-            border-radius: 5px;
-            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
             position: relative;
         }
 
-        .page-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.1);
-            border-radius: 5px;
+        .content-page {
+            padding: 20px;
         }
 
-        .page-text {
-            font-size: 22px;
-            line-height: 1.5;
-            text-align: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.85);
+        .image-container {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            margin: 10px;
             border-radius: 5px;
+            position: relative;
+        }
+
+        .text-content {
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            margin: 10px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .story-text {
+            font-size: 24px;
+            font-weight: bold;
             color: #222;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2), 0 0 8px rgba(255,255,255,0.7);
-            font-weight: bold;
+            line-height: 1.5;
         }
 
         .cover {
@@ -107,7 +88,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            border-radius: 10px 5px 5px 10px;
+            padding: 40px;
         }
 
         .cover-title {
@@ -128,62 +109,58 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 5px 10px 10px 5px;
+            font-size: 32px;
+            font-weight: bold;
         }
 
         .audio-container {
             padding: 15px;
             background-color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            border-top: 1px solid #eee;
-            margin-top: 10px;
+            margin: 10px;
+            border-radius: 5px;
         }
 
         .navigation {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: 16px;
             background: linear-gradient(135deg, #8B4513, #A0522D);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-            transition: all 0.3s;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #A0522D, #8B4513);
         }
 
         button:disabled {
             background: #cccccc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .page-counter {
             text-align: center;
-            font-size: 18px;
-            margin-top: 15px;
+            font-size: 16px;
+            margin-top: 10px;
             color: #555;
-            font-weight: bold;
         }
 
         @media (max-width: 768px) {
-            .book {
+            #flipbook {
                 height: 500px;
             }
             
-            .page-text {
-                font-size: 18px;
+            .story-text {
+                font-size: 20px;
             }
             
             .cover-title {
@@ -196,13 +173,13 @@
         }
 
         @media (max-width: 480px) {
-            .book {
+            #flipbook {
                 height: 400px;
             }
             
-            .page-text {
-                font-size: 16px;
-                padding: 10px;
+            .story-text {
+                font-size: 18px;
+                padding: 15px;
             }
             
             .cover-title {
@@ -212,216 +189,186 @@
             .cover-subtitle {
                 font-size: 18px;
             }
-            
-            button {
-                padding: 10px 20px;
-                font-size: 16px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="book-container">
-        <div class="book" id="book">
-            <!-- Cover -->
-            <div class="page page-1 active" data-page="1">
-                <div class="page-front cover">
-                    <h1 class="cover-title">Tom and Anna</h1>
-                    <p class="cover-subtitle">The Fun Fruit Drawing Contest</p>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141412_Samsung Internet.jpg');"></div>
-                    <div class="page-text">This is Tom and Anna. They are classmates.</div>
+        <div id="flipbook">
+            <!-- Front Cover -->
+            <div class="page cover">
+                <h1 class="cover-title">Tom and Anna</h1>
+                <p class="cover-subtitle">The Fun Fruit Drawing Contest</p>
+            </div>
+            
+            <!-- Page 1 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141412_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">This is Tom and Anna. They are classmates.</p>
                 </div>
             </div>
             
             <!-- Page 2 -->
-            <div class="page page-2" data-page="2">
-                <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141420_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141427_Samsung Internet.jpg');"></div>
-                    <div class="page-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141420_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</p>
                 </div>
             </div>
             
             <!-- Page 3 -->
-            <div class="page page-3" data-page="3">
-                <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141433_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141439_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Anna turns to her friend. "What's wrong, Tom?" she asks. "I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?" "Of course," says Anna. "Here you are."</div>
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141427_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</p>
                 </div>
             </div>
             
             <!-- Page 4 -->
-            <div class="page page-4" data-page="4">
-                <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141447_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Anna gives Tom her sharp spare pencil.</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141452_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Tom is happy. He starts drawing.</div>
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141433_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</p>
                 </div>
             </div>
             
             <!-- Page 5 -->
-            <div class="page page-5" data-page="5">
-                <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141500_Samsung Internet.jpg');"></div>
-                    <div class="page-text">He draws a circle for his apple. It is almost perfect!</div>
-                </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141507_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Oh, dear! He makes a smudge on the paper! Tom looks at the clock. Only thirty seconds left! He needs help. "Can I borrow your rubber, please?" he asks. "Sure," says Anna. "Here you are."</div>
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141439_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Anna turns to her friend.<br>"What's wrong, Tom?" she asks.<br>"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"<br>"Of course," says Anna. "Here you are."</p>
                 </div>
             </div>
             
             <!-- Page 6 -->
-            <div class="page page-6" data-page="6">
-                <div class="page-front">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141516_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge. "Thank you," says Tom. "You're welcome," says Anna.</div>
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141447_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Anna gives Tom her sharp spare pencil.</p>
                 </div>
-                <div class="page-back">
-                    <div class="page-image" style="background-image: url('videos/Screenshot_20251005_141521_Samsung Internet.jpg');"></div>
-                    <div class="page-text">Tom finishes his drawing just in time. Hurrah! Anna is happy to help her friend. Tom's drawing is definitely the best in the class! Hurrah!</div>
-                    <div class="audio-container">
-                        <audio controls style="width: 100%;">
-                            <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
+            </div>
+            
+            <!-- Page 7 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141452_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Tom is happy. He starts drawing.</p>
+                </div>
+            </div>
+            
+            <!-- Page 8 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141500_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">He draws a circle for his apple. It is almost perfect!</p>
+                </div>
+            </div>
+            
+            <!-- Page 9 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141507_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Oh, dear! He makes a smudge on the paper!<br>Tom looks at the clock. Only thirty seconds left! He needs help.<br>"Can I borrow your rubber, please?" he asks.<br>"Sure," says Anna. "Here you are."</p>
+                </div>
+            </div>
+            
+            <!-- Page 10 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141516_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge.<br>"Thank you," says Tom.<br>"You're welcome," says Anna.</p>
+                </div>
+            </div>
+            
+            <!-- Page 11 -->
+            <div class="page content-page">
+                <div class="image-container" style="background-image: url('videos/Screenshot_20251005_141521_Samsung Internet.jpg');"></div>
+                <div class="text-content">
+                    <p class="story-text">Tom finishes his drawing just in time.<br>Hurrah! Anna is happy to help her friend.<br>Tom's drawing is definitely the best in the class! Hurrah!</p>
+                <div class="audio-container">
+                    <audio controls style="width: 100%;">
+                        <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 </div>
             </div>
             
             <!-- Back Cover -->
-            <div class="page page-7" data-page="7">
-                <div class="page-front">
-                    <div class="page-text">The End</div>
-                </div>
-                <div class="page-back back-cover">
-                    <h2>Thank you for reading!</h2>
-                </div>
+            <div class="page back-cover">
+                <div>The End</div>
             </div>
         </div>
         
         <div class="navigation">
-            <button id="prev-btn" disabled>Previous</button>
+            <button id="prev-btn">Previous</button>
             <button id="next-btn">Next</button>
         </div>
         
         <div class="page-counter">
-            Page <span id="current-page">1</span> of <span id="total-pages">7</span>
+            Page <span id="current-page">1</span> of <span id="total-pages">13</span>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const book = document.getElementById('book');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const currentPageEl = document.getElementById('current-page');
-            const totalPagesEl = document.getElementById('total-pages');
+        $(document).ready(function() {
+            // Инициализация flipbook
+            $('#flipbook').turn({
+                width: 900,
+                height: 600,
+                autoCenter: true,
+                duration: 1000,
+                acceleration: true,
+                gradients: true,
+                elevation: 50,
+                display: 'double'
+            });
             
-            const totalPages = 7;
-            let currentPage = 1;
+            // Элементы управления
+            const prevBtn = $('#prev-btn');
+            const nextBtn = $('#next-btn');
+            const currentPageEl = $('#current-page');
+            const totalPagesEl = $('#total-pages');
             
-            totalPagesEl.textContent = totalPages;
-            
-            // Initialize pages position
-            initializePages();
-            
-            function initializePages() {
-                const pages = document.querySelectorAll('.page');
+            // Обновление информации о страницах
+            function updatePageInfo() {
+                const currentPage = $('#flipbook').turn('page');
+                const totalPages = $('#flipbook').turn('pages');
                 
-                pages.forEach((page, index) => {
-                    const pageNumber = parseInt(page.dataset.page);
-                    
-                    if (pageNumber === 1) {
-                        // First page - show front
-                        page.style.transform = 'rotateY(0deg)';
-                        page.style.zIndex = totalPages;
-                    } else {
-                        // Other pages - hide
-                        page.style.transform = 'rotateY(180deg)';
-                        page.style.zIndex = totalPages - pageNumber;
-                    }
-                    
-                    // Add click event for page flipping
-                    page.addEventListener('click', function(e) {
-                        if (pageNumber === currentPage && e.offsetX > this.offsetWidth / 2) {
-                            nextPage();
-                        } else if (pageNumber === currentPage + 1 && e.offsetX < this.offsetWidth / 2) {
-                            prevPage();
-                        }
-                    });
-                });
+                currentPageEl.text(currentPage);
+                totalPagesEl.text(totalPages);
+                
+                // Блокировка кнопок на крайних страницах
+                prevBtn.prop('disabled', currentPage === 1);
+                nextBtn.prop('disabled', currentPage === totalPages);
             }
             
-            function nextPage() {
-                if (currentPage < totalPages) {
-                    const currentPageEl = document.querySelector(`.page-${currentPage}`);
-                    const nextPageEl = document.querySelector(`.page-${currentPage + 1}`);
-                    
-                    // Flip current page
-                    currentPageEl.style.transform = 'rotateY(-180deg)';
-                    currentPageEl.style.zIndex = totalPages - currentPage;
-                    
-                    // Show next page
-                    nextPageEl.style.transform = 'rotateY(0deg)';
-                    nextPageEl.style.zIndex = totalPages - currentPage + 1;
-                    
-                    currentPage++;
-                    updateUI();
-                }
-            }
+            // Обработчики кнопок
+            prevBtn.click(function() {
+                $('#flipbook').turn('previous');
+            });
             
-            function prevPage() {
-                if (currentPage > 1) {
-                    const currentPageEl = document.querySelector(`.page-${currentPage}`);
-                    const prevPageEl = document.querySelector(`.page-${currentPage - 1}`);
-                    
-                    // Flip previous page back
-                    prevPageEl.style.transform = 'rotateY(0deg)';
-                    prevPageEl.style.zIndex = totalPages - currentPage + 2;
-                    
-                    // Hide current page
-                    currentPageEl.style.transform = 'rotateY(180deg)';
-                    currentPageEl.style.zIndex = totalPages - currentPage;
-                    
-                    currentPage--;
-                    updateUI();
-                }
-            }
+            nextBtn.click(function() {
+                $('#flipbook').turn('next');
+            });
             
-            function updateUI() {
-                currentPageEl.textContent = currentPage;
-                prevBtn.disabled = currentPage === 1;
-                nextBtn.disabled = currentPage === totalPages;
-            }
-            
-            // Button event listeners
-            prevBtn.addEventListener('click', prevPage);
-            nextBtn.addEventListener('click', nextPage);
-            
-            // Keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowRight') {
-                    nextPage();
-                } else if (e.key === 'ArrowLeft') {
-                    prevPage();
+            // Обработчики клавиатуры
+            $(document).keydown(function(e) {
+                if (e.keyCode === 37) { // Стрелка влево
+                    $('#flipbook').turn('previous');
+                } else if (e.keyCode === 39) { // Стрелка вправо
+                    $('#flipbook').turn('next');
                 }
             });
             
-            // Initialize UI
-            updateUI();
+            // Обработчик изменения страницы
+            $('#flipbook').bind('turned', function(event, page) {
+                updatePageInfo();
+            });
+            
+            // Инициализация информации о страницах
+            updatePageInfo();
         });
     </script>
 </body>
