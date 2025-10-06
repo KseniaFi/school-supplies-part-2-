@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tom and Anna's Fruit Drawing Contest</title>
+    <title>Tom and Anna's Fruit Drawing Adventure</title>
     <style>
         * {
             margin: 0;
@@ -12,34 +12,42 @@
         }
 
         body {
-            background: #f5f5f5;
-            font-family: 'Georgia', serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+            padding: 20px;
             perspective: 1000px;
-            overflow-x: hidden;
-            padding: 10px;
         }
 
         .book-container {
-            width: 95vw;
-            height: 75vh;
-            max-width: 1000px;
-            max-height: 700px;
-            position: relative;
-            transform-style: preserve-3d;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
         }
 
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Book Styles */
         .book {
-            width: 100%;
-            height: 100%;
+            width: 90%;
+            max-width: 800px;
+            height: 500px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.6s;
+            margin: 0 auto;
         }
 
         .page {
@@ -48,13 +56,13 @@
             height: 100%;
             top: 0;
             left: 0;
-            transform-origin: left center;
             transform-style: preserve-3d;
-            transition: transform 0.8s ease-in-out;
-            border-radius: 8px;
+            transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 8px 0 0 8px;
             overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
         }
 
         .front, .back {
@@ -63,468 +71,397 @@
             height: 100%;
             backface-visibility: hidden;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #fff;
-            border: 2px solid #e0e0e0;
-            flex-direction: column;
-            padding: 25px;
+            padding: 30px;
             text-align: center;
         }
 
         .back {
             transform: rotateY(180deg);
+            background: white;
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
         .page-image {
-            width: 100%;
-            height: 60%;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            max-width: 100%;
+            max-height: 60%;
+            object-fit: contain;
             margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .page-image.loaded {
-            opacity: 1;
-        }
-
-        .story-text {
-            font-size: 2.2em;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            color: #2c3e50;
+        .page-text {
+            font-size: 1.8rem;
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            color: #333;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            padding: 0 10px;
+        }
+
+        /* Cover specific styles */
+        .cover .front {
+            background: white;
+            justify-content: center;
+        }
+
+        .cover-image {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .dialogue {
-            font-size: 1.9em;
-            color: #8a2be2;
-            font-style: italic;
-            margin: 10px 0;
-            font-weight: 600;
-        }
-
-        /* Page positioning - 12 pages total */
-        .page[data-page="cover"] { z-index: 12; }
-        .page[data-page="1"] { z-index: 11; }
-        .page[data-page="2"] { z-index: 10; }
-        .page[data-page="3"] { z-index: 9; }
-        .page[data-page="4"] { z-index: 8; }
-        .page[data-page="5"] { z-index: 7; }
-        .page[data-page="6"] { z-index: 6; }
-        .page[data-page="7"] { z-index: 5; }
-        .page[data-page="8"] { z-index: 4; }
-        .page[data-page="9"] { z-index: 3; }
-        .page[data-page="10"] { z-index: 2; }
-        .page[data-page="11"] { z-index: 1; }
-
-        /* Flipped page state */
-        .flipped {
-            transform: rotateY(-180deg);
-        }
-
-        /* Navigation buttons */
+        /* Navigation Controls */
         .navigation {
-            position: absolute;
-            bottom: -70px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
-            gap: 25px;
-            z-index: 100;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .nav-btn {
-            padding: 14px 35px;
-            background-color: #8a2be2;
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            background: #4CAF50;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s;
-            font-family: 'Georgia', serif;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
 
-        .nav-btn:hover {
-            background-color: #6a1cb0;
-            transform: translateY(-3px);
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.2);
         }
 
-        .nav-btn:disabled {
-            background-color: #cccccc;
+        button:disabled {
+            background: #cccccc;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        /* Audio player styles */
-        .audio-player-container {
-            text-align: center;
-            width: 95vw;
-            max-width: 650px;
-            padding: 20px;
-            background: linear-gradient(135deg, #8a2be2, #6a1cb0);
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            color: white;
-            margin-bottom: 25px;
+        /* Audio Player Styles */
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .audio-player button {
+            background: #2196F3;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .audio-player button:hover {
+            background: #0b7dda;
         }
 
         .audio-title {
-            font-family: 'Georgia', serif;
-            margin-bottom: 18px;
-            font-size: 1.8em;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Page Counter */
+        .page-counter {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #666;
             font-weight: bold;
         }
 
-        audio {
-            width: 100%;
-            outline: none;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        /* Loading indicator */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 26px;
-            color: #8a2be2;
-            z-index: 1000;
-            font-weight: bold;
-        }
-
-        /* Mobile adaptation */
-        @media (max-width: 1024px) {
-            .book-container {
-                width: 98vw;
-                height: 80vh;
-                max-height: 650px;
-            }
-            
-            .story-text {
-                font-size: 2em;
-            }
-
-            .dialogue {
-                font-size: 1.7em;
-            }
-            
-            .nav-btn {
-                padding: 12px 30px;
-                font-size: 18px;
-            }
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                perspective: 600px;
-                padding: 5px;
+            .book {
+                height: 400px;
             }
-
-            .book-container {
-                width: 100vw;
-                height: 85vh;
-                max-height: 600px;
+            
+            .page-text {
+                font-size: 1.4rem;
             }
-
-            .story-text {
-                font-size: 1.8em;
-            }
-
-            .dialogue {
-                font-size: 1.5em;
-            }
-
-            .front, .back {
-                padding: 15px;
-            }
-
-            .audio-player-container {
-                width: 98vw;
-                padding: 15px;
-            }
-
-            .audio-title {
-                font-size: 1.5em;
-            }
-
-            .nav-btn {
-                padding: 10px 25px;
-                font-size: 16px;
+            
+            h1 {
+                font-size: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .book-container {
-                height: 90vh;
-                max-height: 550px;
+            .book {
+                height: 350px;
             }
             
-            .story-text {
-                font-size: 1.6em;
-            }
-
-            .dialogue {
-                font-size: 1.3em;
-            }
-
-            .page-image {
-                height: 50%;
-                margin-bottom: 15px;
-            }
-
-            .audio-player-container {
-                width: 100vw;
-                padding: 12px;
-                border-radius: 12px;
-            }
-
-            .audio-title {
-                font-size: 1.3em;
-            }
-
-            .nav-btn {
-                padding: 8px 20px;
-                font-size: 14px;
+            .page-text {
+                font-size: 1.2rem;
             }
             
-            .navigation {
-                bottom: -60px;
-                gap: 15px;
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .audio-player {
+                flex-direction: column;
+                gap: 10px;
+                border-radius: 25px;
+                padding: 15px;
             }
         }
 
-        @media (max-width: 360px) {
-            .story-text {
-                font-size: 1.4em;
-            }
-            
-            .dialogue {
-                font-size: 1.2em;
-            }
-            
-            .front, .back {
-                padding: 10px;
-            }
+        /* Animation for page turning */
+        @keyframes pageTurn {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(-180deg); }
+        }
+
+        .turning {
+            animation: pageTurn 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
         }
     </style>
 </head>
 <body>
-    <div class="loading">Loading book...</div>
-    
-    <div class="book-container" style="display: none;">
-        <div class="book">
-            <!-- Cover (only image) -->
-            <div class="page" data-page="cover">
-                <div class="front">
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">This is Tom and Anna. They are classmates.</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
-                </div>
-            </div>
-            
-            <!-- Page 1 -->
-            <div class="page" data-page="1">
-                <div class="front">
-                    <div class="story-text">Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141420_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141427_Samsung Internet.jpg"></div>
-                </div>
-            </div>
-            
-            <!-- Page 2 -->
-            <div class="page" data-page="2">
-                <div class="front">
-                    <div class="story-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141433_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">Anna turns to her friend.</div>
-                    <div class="dialogue">"What's wrong, Tom?" she asks.</div>
-                    <div class="dialogue">"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"</div>
-                    <div class="dialogue">"Of course," says Anna. "Here you are."</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141439_Samsung Internet.jpg"></div>
-                </div>
-            </div>
-            
-            <!-- Page 3 -->
-            <div class="page" data-page="3">
-                <div class="front">
-                    <div class="story-text">Anna gives Tom her sharp spare pencil.</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141447_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">Tom is happy. He starts drawing.</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141452_Samsung Internet.jpg"></div>
-                </div>
-            </div>
-            
-            <!-- Page 4 -->
-            <div class="page" data-page="4">
-                <div class="front">
-                    <div class="story-text">He draws a circle for his apple. It is almost perfect!</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141500_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">Oh, dear! He makes a smudge on the paper!</div>
-                    <div class="story-text">Tom looks at the clock. Only thirty seconds left! He needs help.</div>
-                    <div class="dialogue">"Can I borrow your rubber, please?" he asks.</div>
-                    <div class="dialogue">"Sure," says Anna. "Here you are."</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141507_Samsung Internet.jpg"></div>
-                </div>
-            </div>
-            
-            <!-- Page 5 -->
-            <div class="page" data-page="5">
-                <div class="front">
-                    <div class="story-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge.</div>
-                    <div class="dialogue">"Thank you," says Tom.</div>
-                    <div class="dialogue">"You're welcome," says Anna.</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141516_Samsung Internet.jpg"></div>
-                </div>
-                <div class="back">
-                    <div class="story-text">Tom finishes his drawing just in time.</div>
-                    <div class="story-text">Hurrah! Anna is happy to help her friend.</div>
-                    <div class="story-text">Tom's drawing is definitely the best in the class! Hurrah!</div>
-                    <div class="page-image" data-src="videos/Screenshot_20251005_141521_Samsung Internet.jpg"></div>
-                </div>
-            </div>
+    <div class="book-container">
+        <h1>Tom and Anna's Fruit Drawing Adventure</h1>
+        
+        <div class="book" id="book">
+            <!-- Pages will be generated by JavaScript -->
         </div>
         
-        <!-- Navigation buttons -->
-        <div class="navigation">
-            <button id="prev-btn" class="nav-btn" disabled>Back</button>
-            <button id="next-btn" class="nav-btn">Next</button>
+        <div class="page-counter">
+            Page: <span id="current-page">1</span> of <span id="total-pages">12</span>
         </div>
-    </div>
-
-    <!-- Audio player -->
-    <div class="audio-player-container">
-        <div class="audio-title">🔊 Story Audio</div>
-        <audio controls>
-            <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mp3">
-            Your browser does not support the audio element.
-        </audio>
+        
+        <div class="navigation">
+            <button id="prev-btn">Previous Page</button>
+            <button id="next-btn">Next Page</button>
+        </div>
+        
+        <div class="audio-player">
+            <span class="audio-title">Story Audio:</span>
+            <button id="play-pause-btn">▶</button>
+            <audio id="story-audio" controls style="display: none;">
+                <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const loadingElement = document.querySelector('.loading');
-            const bookContainer = document.querySelector('.book-container');
-            const pages = document.querySelectorAll('.page');
-            const pageImages = document.querySelectorAll('.page-image');
+            // Story data from user's request
+            const storyPages = [
+                // Cover (image only)
+                {
+                    image: 'videos/Screenshot_20251005_141412_Samsung Internet.jpg',
+                    text: ''
+                },
+                // Page 1
+                {
+                    image: 'videos/Screenshot_20251005_141412_Samsung Internet.jpg',
+                    text: '1) This is Tom and Anna. They are classmates.'
+                },
+                // Page 2
+                {
+                    image: 'videos/Screenshot_20251005_141420_Samsung Internet.jpg',
+                    text: '2) Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"'
+                },
+                // Page 3
+                {
+                    image: 'videos/Screenshot_20251005_141427_Samsung Internet.jpg',
+                    text: '3) The teacher says, "Your mission is to draw the ripest red apple! The winner\'s drawing will be on the school album cover. Ready? Go!"'
+                },
+                // Page 4
+                {
+                    image: 'videos/Screenshot_20251005_141433_Samsung Internet.jpg',
+                    text: '4) Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can\'t find his favourite pencil!'
+                },
+                // Page 5
+                {
+                    image: 'videos/Screenshot_20251005_141439_Samsung Internet.jpg',
+                    text: '5) Anna turns to her friend. "What\'s wrong, Tom?" she asks. "I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?" "Of course," says Anna. "Here you are."'
+                },
+                // Page 6
+                {
+                    image: 'videos/Screenshot_20251005_141447_Samsung Internet.jpg',
+                    text: '6) Anna gives Tom her sharp spare pencil.'
+                },
+                // Page 7
+                {
+                    image: 'videos/Screenshot_20251005_141452_Samsung Internet.jpg',
+                    text: '7) Tom is happy. He starts drawing.'
+                },
+                // Page 8
+                {
+                    image: 'videos/Screenshot_20251005_141500_Samsung Internet.jpg',
+                    text: '8) He draws a circle for his apple. It is almost perfect!'
+                },
+                // Page 9
+                {
+                    image: 'videos/Screenshot_20251005_141507_Samsung Internet.jpg',
+                    text: '9) Oh, dear! He makes a smudge on the paper! Tom looks at the clock. Only thirty seconds left! He needs help. "Can I borrow your rubber, please?" he asks. "Sure," says Anna. "Here you are."'
+                },
+                // Page 10
+                {
+                    image: 'videos/Screenshot_20251005_141516_Samsung Internet.jpg',
+                    text: '10) Tom uses Anna\'s cloud-shaped rubber. He rubs out the smudge. "Thank you," says Tom. "You\'re welcome," says Anna.'
+                },
+                // Page 11
+                {
+                    image: 'videos/Screenshot_20251005_141521_Samsung Internet.jpg',
+                    text: '11) Tom finishes his drawing just in time. Hurrah! Anna is happy to help her friend. Tom\'s drawing is definitely the best in the class! Hurrah!'
+                }
+            ];
+
+            const book = document.getElementById('book');
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
+            const currentPageEl = document.getElementById('current-page');
+            const totalPagesEl = document.getElementById('total-pages');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const audio = document.getElementById('story-audio');
+
             let currentPage = 0;
-            const totalPages = pages.length;
-            
-            // Function to preload images
-            function preloadImages() {
-                return new Promise((resolve, reject) => {
-                    let loadedCount = 0;
-                    const totalImages = pageImages.length;
-                    
-                    if (totalImages === 0) {
-                        resolve();
-                        return;
-                    }
-                    
-                    pageImages.forEach(imgElement => {
-                        const imgSrc = imgElement.getAttribute('data-src');
-                        const img = new Image();
-                        
-                        img.onload = function() {
-                            imgElement.style.backgroundImage = `url('${imgSrc}')`;
-                            imgElement.classList.add('loaded');
-                            loadedCount++;
-                            
-                            if (loadedCount === totalImages) {
-                                resolve();
-                            }
-                        };
-                        
-                        img.onerror = function() {
-                            console.error(`Failed to load image: ${imgSrc}`);
-                            imgElement.style.background = '#f0f0f0';
-                            imgElement.style.display = 'flex';
-                            imgElement.innerHTML = '<p>Image not found</p>';
-                            imgElement.classList.add('loaded');
-                            loadedCount++;
-                            
-                            if (loadedCount === totalImages) {
-                                resolve();
-                            }
-                        };
-                        
-                        img.src = imgSrc;
-                    });
-                });
-            }
-            
-            // Function to update button states
-            function updateButtons() {
-                prevBtn.disabled = currentPage === 0;
-                nextBtn.disabled = currentPage === totalPages - 1;
-            }
-            
-            // Function to flip to next page
-            function flipNext() {
-                if (currentPage < totalPages - 1) {
-                    pages[currentPage].classList.add('flipped');
-                    currentPage++;
-                    updateButtons();
+            const totalPages = storyPages.length;
+            totalPagesEl.textContent = totalPages;
+
+            // Create pages
+            storyPages.forEach((page, index) => {
+                const pageElement = document.createElement('div');
+                pageElement.className = 'page';
+                pageElement.id = `page-${index}`;
+                
+                if (index === 0) {
+                    pageElement.classList.add('cover');
                 }
-            }
-            
-            // Function to flip to previous page
-            function flipPrev() {
+                
+                pageElement.innerHTML = `
+                    <div class="front">
+                        <div class="page-content">
+                            ${page.image ? `<img src="${page.image}" alt="Page ${index+1}" class="page-image">` : ''}
+                            ${page.text ? `<div class="page-text">${page.text}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="back">
+                        <div class="page-content">
+                            ${storyPages[index+1] && storyPages[index+1].image ? 
+                                `<img src="${storyPages[index+1].image}" alt="Page ${index+2}" class="page-image">` : ''}
+                            ${storyPages[index+1] && storyPages[index+1].text ? 
+                                `<div class="page-text">${storyPages[index+1].text}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                // Position pages correctly
+                if (index > 0) {
+                    pageElement.style.zIndex = totalPages - index;
+                }
+                
+                book.appendChild(pageElement);
+            });
+
+            // Initialize page display
+            updatePageDisplay();
+
+            // Event listeners for navigation
+            prevBtn.addEventListener('click', goToPreviousPage);
+            nextBtn.addEventListener('click', goToNextPage);
+
+            // Event listener for audio control
+            playPauseBtn.addEventListener('click', toggleAudio);
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    goToPreviousPage();
+                } else if (e.key === 'ArrowRight') {
+                    goToNextPage();
+                }
+            });
+
+            function goToPreviousPage() {
                 if (currentPage > 0) {
                     currentPage--;
-                    pages[currentPage].classList.remove('flipped');
-                    updateButtons();
+                    updatePageDisplay();
                 }
             }
-            
-            // Initialize the book after images are loaded
-            preloadImages().then(() => {
-                // Hide loading indicator and show book
-                loadingElement.style.display = 'none';
-                bookContainer.style.display = 'block';
+
+            function goToNextPage() {
+                if (currentPage < totalPages - 1) {
+                    // Add turning animation class
+                    const currentPageElement = document.getElementById(`page-${currentPage}`);
+                    currentPageElement.classList.add('turning');
+                    
+                    setTimeout(() => {
+                        currentPage++;
+                        updatePageDisplay();
+                        currentPageElement.classList.remove('turning');
+                    }, 400);
+                }
+            }
+
+            function updatePageDisplay() {
+                // Update all pages visibility and position
+                for (let i = 0; i < totalPages; i++) {
+                    const pageElement = document.getElementById(`page-${i}`);
+                    if (i <= currentPage) {
+                        // Pages before and including current page are "turned"
+                        pageElement.style.transform = 'rotateY(-180deg)';
+                    } else {
+                        // Pages after current page are flat
+                        pageElement.style.transform = 'rotateY(0deg)';
+                    }
+                }
                 
-                // Add click handlers to each page (forward only)
-                pages.forEach((page, index) => {
-                    page.addEventListener('click', function() {
-                        if (index === currentPage) {
-                            flipNext();
-                        }
-                    });
-                });
+                // Update button states
+                prevBtn.disabled = currentPage === 0;
+                nextBtn.disabled = currentPage === totalPages - 1;
                 
-                // Button handlers
-                prevBtn.addEventListener('click', flipPrev);
-                nextBtn.addEventListener('click', flipNext);
-                
-                // Initialize button states
-                updateButtons();
-            }).catch(error => {
-                console.error('Error loading images:', error);
-                loadingElement.textContent = 'Error loading book. Please refresh the page.';
+                // Update page counter
+                currentPageEl.textContent = currentPage + 1;
+            }
+
+            function toggleAudio() {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseBtn.textContent = '❚❚';
+                } else {
+                    audio.pause();
+                    playPauseBtn.textContent = '▶';
+                }
+            }
+
+            // Audio event listeners to update button
+            audio.addEventListener('play', function() {
+                playPauseBtn.textContent = '❚❚';
+            });
+
+            audio.addEventListener('pause', function() {
+                playPauseBtn.textContent = '▶';
             });
         });
     </script>
