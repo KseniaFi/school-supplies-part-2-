@@ -68,7 +68,7 @@
             background-color: #fff;
             border: 1px solid #ddd;
             flex-direction: column;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
         }
 
@@ -78,12 +78,13 @@
 
         .page-image {
             width: 100%;
-            height: 100%;
+            height: 60%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             opacity: 0;
             transition: opacity 0.3s;
+            margin-bottom: 15px;
         }
 
         .page-image.loaded {
@@ -91,24 +92,36 @@
         }
 
         .story-text {
-            font-size: 1.2em;
-            line-height: 1.6;
+            font-size: 1.8em;
+            line-height: 1.5;
             margin-bottom: 15px;
-            color: #333;
+            color: #2c3e50;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .dialogue {
+            font-size: 1.6em;
+            color: #8a2be2;
+            font-style: italic;
+            margin: 8px 0;
+            font-weight: 600;
         }
 
         /* Page positioning */
-        .page[data-page="cover"] { z-index: 11; }
-        .page[data-page="1"] { z-index: 10; }
-        .page[data-page="2"] { z-index: 9; }
-        .page[data-page="3"] { z-index: 8; }
-        .page[data-page="4"] { z-index: 7; }
-        .page[data-page="5"] { z-index: 6; }
-        .page[data-page="6"] { z-index: 5; }
-        .page[data-page="7"] { z-index: 4; }
-        .page[data-page="8"] { z-index: 3; }
-        .page[data-page="9"] { z-index: 2; }
-        .page[data-page="10"] { z-index: 1; }
+        .page[data-page="cover"] { z-index: 12; }
+        .page[data-page="1"] { z-index: 11; }
+        .page[data-page="2"] { z-index: 10; }
+        .page[data-page="3"] { z-index: 9; }
+        .page[data-page="4"] { z-index: 8; }
+        .page[data-page="5"] { z-index: 7; }
+        .page[data-page="6"] { z-index: 6; }
+        .page[data-page="7"] { z-index: 5; }
+        .page[data-page="8"] { z-index: 4; }
+        .page[data-page="9"] { z-index: 3; }
+        .page[data-page="10"] { z-index: 2; }
+        .page[data-page="11"] { z-index: 1; }
 
         /* Flipped page state */
         .flipped {
@@ -127,24 +140,27 @@
         }
 
         .nav-btn {
-            padding: 10px 25px;
+            padding: 12px 30px;
             background-color: #8a2be2;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             transition: background-color 0.3s;
             font-family: 'Georgia', serif;
+            font-weight: bold;
         }
 
         .nav-btn:hover {
             background-color: #6a1cb0;
+            transform: translateY(-2px);
         }
 
         .nav-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Стили для аудиоплеера */
@@ -163,8 +179,9 @@
         .audio-title {
             font-family: 'Georgia', serif;
             margin-bottom: 15px;
-            font-size: 1.4em;
+            font-size: 1.6em;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-weight: bold;
         }
 
         audio {
@@ -174,90 +191,16 @@
             overflow: hidden;
         }
 
-        /* Кнопка печати */
-        .print-btn-container {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .print-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #4ecdc4, #ff6b6b);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-            font-family: 'Georgia', serif;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .print-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
         /* Loading indicator */
         .loading {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px;
+            font-size: 24px;
             color: #8a2be2;
             z-index: 1000;
-        }
-
-        /* Стили для печати */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .book-container, .book-container * {
-                visibility: visible;
-            }
-            .book-container {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: auto;
-                max-width: none;
-                max-height: none;
-                box-shadow: none;
-            }
-            .page {
-                position: relative;
-                width: 100%;
-                height: auto;
-                min-height: 100vh;
-                page-break-after: always;
-                page-break-inside: avoid;
-                break-inside: avoid;
-                transform: none !important;
-                box-shadow: none;
-                margin-bottom: 0;
-            }
-            .front, .back {
-                position: relative;
-                transform: none;
-                page-break-inside: avoid;
-                break-inside: avoid;
-                height: auto;
-                min-height: 95vh;
-                display: block;
-                padding: 40px;
-            }
-            .navigation, .audio-player-container, .print-btn-container {
-                display: none;
-            }
-            
-            /* Стараемся избегать разрывов внутри контента страницы [citation:7][citation:9] */
-            .story-text, .page-image {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
+            font-weight: bold;
         }
 
         /* Mobile adaptation */
@@ -272,7 +215,11 @@
             }
 
             .story-text {
-                font-size: 1em;
+                font-size: 1.4em;
+            }
+
+            .dialogue {
+                font-size: 1.3em;
             }
 
             .audio-player-container {
@@ -281,7 +228,12 @@
             }
 
             .audio-title {
-                font-size: 1.2em;
+                font-size: 1.3em;
+            }
+
+            .nav-btn {
+                padding: 10px 25px;
+                font-size: 16px;
             }
         }
 
@@ -291,22 +243,26 @@
                 height: 85vh;
             }
             
-            .nav-btn {
-                padding: 8px 16px;
-                font-size: 14px;
+            .story-text {
+                font-size: 1.2em;
             }
 
-            .story-text {
-                font-size: 0.9em;
+            .dialogue {
+                font-size: 1.1em;
             }
 
             .audio-player-container {
                 width: 98vw;
-                padding: 10px;
+                padding: 12px;
             }
 
             .audio-title {
-                font-size: 1.1em;
+                font-size: 1.2em;
+            }
+
+            .nav-btn {
+                padding: 8px 20px;
+                font-size: 14px;
             }
         }
     </style>
@@ -322,9 +278,7 @@
                     <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>This is Tom and Anna. They are classmates.</p>
-                    </div>
+                    <div class="story-text">This is Tom and Anna. They are classmates.</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -332,15 +286,11 @@
             <!-- Page 1 -->
             <div class="page" data-page="1">
                 <div class="front">
-                    <div class="story-text">
-                        <p>Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</p>
-                    </div>
+                    <div class="story-text">Today is a special day at school. Hurrah! It is the "Fun Fruit Drawing Contest!"</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141420_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</p>
-                    </div>
+                    <div class="story-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141427_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -348,15 +298,14 @@
             <!-- Page 2 -->
             <div class="page" data-page="2">
                 <div class="front">
-                    <div class="story-text">
-                        <p>Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</p>
-                    </div>
+                    <div class="story-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141433_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>Anna turns to her friend.<br>"What's wrong, Tom?" she asks.<br>"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"<br>"Of course," says Anna. "Here you are."</p>
-                    </div>
+                    <div class="story-text">Anna turns to her friend.</div>
+                    <div class="dialogue">"What's wrong, Tom?" she asks.</div>
+                    <div class="dialogue">"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"</div>
+                    <div class="dialogue">"Of course," says Anna. "Here you are."</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141439_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -364,15 +313,11 @@
             <!-- Page 3 -->
             <div class="page" data-page="3">
                 <div class="front">
-                    <div class="story-text">
-                        <p>Anna gives Tom her sharp spare pencil.</p>
-                    </div>
+                    <div class="story-text">Anna gives Tom her sharp spare pencil.</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141447_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>Tom is happy. He starts drawing.</p>
-                    </div>
+                    <div class="story-text">Tom is happy. He starts drawing.</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141452_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -380,15 +325,14 @@
             <!-- Page 4 -->
             <div class="page" data-page="4">
                 <div class="front">
-                    <div class="story-text">
-                        <p>He draws a circle for his apple. It is almost perfect!</p>
-                    </div>
+                    <div class="story-text">He draws a circle for his apple. It is almost perfect!</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141500_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>Oh, dear! He makes a smudge on the paper! Tom looks at the clock. Only thirty seconds left! He needs help. "Can I borrow your rubber, please?" he asks. "Sure," says Anna. "Here you are."</p>
-                    </div>
+                    <div class="story-text">Oh, dear! He makes a smudge on the paper!</div>
+                    <div class="story-text">Tom looks at the clock. Only thirty seconds left! He needs help.</div>
+                    <div class="dialogue">"Can I borrow your rubber, please?" he asks.</div>
+                    <div class="dialogue">"Sure," says Anna. "Here you are."</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141507_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -396,15 +340,15 @@
             <!-- Page 5 -->
             <div class="page" data-page="5">
                 <div class="front">
-                    <div class="story-text">
-                        <p>Tom uses Anna's cloud-shaped rubber. He rubs out the smudge. "Thank you," says Tom. "You're welcome," says Anna.</p>
-                    </div>
+                    <div class="story-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge.</div>
+                    <div class="dialogue">"Thank you," says Tom.</div>
+                    <div class="dialogue">"You're welcome," says Anna.</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141516_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">
-                        <p>Tom finishes his drawing just in time. Hurrah! Anna is happy to help her friend. Tom's drawing is definitely the best in the class! Hurrah!</p>
-                    </div>
+                    <div class="story-text">Tom finishes his drawing just in time.</div>
+                    <div class="story-text">Hurrah! Anna is happy to help her friend.</div>
+                    <div class="story-text">Tom's drawing is definitely the best in the class! Hurrah!</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141521_Samsung Internet.jpg"></div>
                 </div>
             </div>
@@ -424,11 +368,6 @@
             <source src="videos/2025-10-06-185024_117169.mp3" type="audio/mp3">
             Your browser does not support the audio element.
         </audio>
-    </div>
-
-    <!-- Кнопка печати -->
-    <div class="print-btn-container">
-        <button class="print-btn" onclick="window.print()">Print Book / Save as PDF</button>
     </div>
 
     <script>
