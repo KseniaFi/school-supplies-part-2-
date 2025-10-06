@@ -27,11 +27,11 @@
         .book-container {
             width: 90vw;
             height: 70vh;
-            max-width: 800px;
-            max-height: 600px;
+            max-width: 850px;
+            max-height: 650px;
             position: relative;
             transform-style: preserve-3d;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .book {
@@ -51,10 +51,10 @@
             transform-origin: left center;
             transform-style: preserve-3d;
             transition: transform 0.8s ease-in-out;
-            border-radius: 5px;
+            border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         .front, .back {
@@ -66,7 +66,7 @@
             justify-content: center;
             align-items: center;
             background-color: #fff;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
             flex-direction: column;
             padding: 25px;
             text-align: center;
@@ -84,7 +84,7 @@
             background-position: center;
             opacity: 0;
             transition: opacity 0.3s;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .page-image.loaded {
@@ -92,69 +92,69 @@
         }
 
         .story-text {
-            font-size: 1.8em;
+            font-size: 2em;
             line-height: 1.5;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: #2c3e50;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
             width: 100%;
         }
 
         .dialogue {
-            font-size: 1.6em;
+            font-size: 1.8em;
             color: #8a2be2;
             font-style: italic;
-            margin: 8px 0;
+            margin: 10px 0;
             font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Page positioning */
-        .page[data-page="cover"] { z-index: 12; }
-        .page[data-page="1"] { z-index: 11; }
-        .page[data-page="2"] { z-index: 10; }
-        .page[data-page="3"] { z-index: 9; }
-        .page[data-page="4"] { z-index: 8; }
-        .page[data-page="5"] { z-index: 7; }
-        .page[data-page="6"] { z-index: 6; }
-        .page[data-page="7"] { z-index: 5; }
-        .page[data-page="8"] { z-index: 4; }
-        .page[data-page="9"] { z-index: 3; }
-        .page[data-page="10"] { z-index: 2; }
-        .page[data-page="11"] { z-index: 1; }
+        /* Page z-index setup (12 pages total) */
+        .page[data-page="cover"] { z-index: 13; }
+        .page[data-page="1"] { z-index: 12; }
+        .page[data-page="2"] { z-index: 11; }
+        .page[data-page="3"] { z-index: 10; }
+        .page[data-page="4"] { z-index: 9; }
+        .page[data-page="5"] { z-index: 8; }
+        .page[data-page="6"] { z-index: 7; }
+        .page[data-page="7"] { z-index: 6; }
+        .page[data-page="8"] { z-index: 5; }
+        .page[data-page="9"] { z-index: 4; }
+        .page[data-page="10"] { z-index: 3; }
+        .page[data-page="11"] { z-index: 2; }
+        .page[data-page="12"] { z-index: 1; }
 
-        /* Flipped page state */
         .flipped {
             transform: rotateY(-180deg);
         }
 
-        /* Navigation buttons */
         .navigation {
             position: absolute;
-            bottom: -60px;
+            bottom: -70px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 20px;
+            gap: 25px;
             z-index: 100;
         }
 
         .nav-btn {
-            padding: 12px 30px;
+            padding: 14px 36px;
             background-color: #8a2be2;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s;
+            font-size: 20px;
+            transition: all 0.3s;
             font-family: 'Georgia', serif;
             font-weight: bold;
         }
 
         .nav-btn:hover {
             background-color: #6a1cb0;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
         .nav-btn:disabled {
@@ -163,7 +163,6 @@
             transform: none;
         }
 
-        /* Стили для аудиоплеера */
         .audio-player-container {
             text-align: center;
             width: 90vw;
@@ -188,91 +187,37 @@
             width: 100%;
             outline: none;
             border-radius: 10px;
-            overflow: hidden;
         }
 
-        /* Loading indicator */
         .loading {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
+            font-size: 28px;
             color: #8a2be2;
             z-index: 1000;
             font-weight: bold;
         }
 
-        /* Mobile adaptation */
         @media (max-width: 768px) {
-            .book-container {
-                width: 95vw;
-                height: 80vh;
-            }
-            
-            body {
-                perspective: 500px;
-            }
-
-            .story-text {
-                font-size: 1.4em;
-            }
-
-            .dialogue {
-                font-size: 1.3em;
-            }
-
-            .audio-player-container {
-                width: 95vw;
-                padding: 15px;
-            }
-
-            .audio-title {
-                font-size: 1.3em;
-            }
-
-            .nav-btn {
-                padding: 10px 25px;
-                font-size: 16px;
-            }
+            .story-text { font-size: 1.6em; }
+            .dialogue { font-size: 1.4em; }
+            .nav-btn { font-size: 16px; padding: 10px 24px; }
         }
 
         @media (max-width: 480px) {
-            .book-container {
-                width: 98vw;
-                height: 85vh;
-            }
-            
-            .story-text {
-                font-size: 1.2em;
-            }
-
-            .dialogue {
-                font-size: 1.1em;
-            }
-
-            .audio-player-container {
-                width: 98vw;
-                padding: 12px;
-            }
-
-            .audio-title {
-                font-size: 1.2em;
-            }
-
-            .nav-btn {
-                padding: 8px 20px;
-                font-size: 14px;
-            }
+            .story-text { font-size: 1.3em; }
+            .dialogue { font-size: 1.2em; }
         }
     </style>
 </head>
 <body>
     <div class="loading">Loading book...</div>
-    
+
     <div class="book-container" style="display: none;">
         <div class="book">
-            <!-- Cover (только картинка) -->
+            <!-- Cover -->
             <div class="page" data-page="cover">
                 <div class="front">
                     <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
@@ -282,7 +227,7 @@
                     <div class="page-image" data-src="videos/Screenshot_20251005_141412_Samsung Internet.jpg"></div>
                 </div>
             </div>
-            
+
             <!-- Page 1 -->
             <div class="page" data-page="1">
                 <div class="front">
@@ -290,26 +235,26 @@
                     <div class="page-image" data-src="videos/Screenshot_20251005_141420_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
-                    <div class="story-text">The teacher says, "Your mission is to draw the ripest red apple! The winner's drawing will be on the school album cover. Ready? Go!"</div>
+                    <div class="story-text">The teacher says, “Your mission is to draw the ripest red apple! The winner’s drawing will be on the school album cover. Ready? Go!”</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141427_Samsung Internet.jpg"></div>
                 </div>
             </div>
-            
+
             <!-- Page 2 -->
             <div class="page" data-page="2">
                 <div class="front">
-                    <div class="story-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can't find his favourite pencil!</div>
+                    <div class="story-text">Tom opens his pencil case. He wants to draw a big, round apple. But oh, no! He can’t find his favourite pencil!</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141433_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
                     <div class="story-text">Anna turns to her friend.</div>
-                    <div class="dialogue">"What's wrong, Tom?" she asks.</div>
-                    <div class="dialogue">"I forgot my lucky pencil at home", says Tom. "Can I borrow your pencil, please?"</div>
-                    <div class="dialogue">"Of course," says Anna. "Here you are."</div>
+                    <div class="dialogue">“What’s wrong, Tom?” she asks.</div>
+                    <div class="dialogue">“I forgot my lucky pencil at home,” says Tom. “Can I borrow your pencil, please?”</div>
+                    <div class="dialogue">“Of course,” says Anna. “Here you are.”</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141439_Samsung Internet.jpg"></div>
                 </div>
             </div>
-            
+
             <!-- Page 3 -->
             <div class="page" data-page="3">
                 <div class="front">
@@ -321,7 +266,7 @@
                     <div class="page-image" data-src="videos/Screenshot_20251005_141452_Samsung Internet.jpg"></div>
                 </div>
             </div>
-            
+
             <!-- Page 4 -->
             <div class="page" data-page="4">
                 <div class="front">
@@ -331,37 +276,35 @@
                 <div class="back">
                     <div class="story-text">Oh, dear! He makes a smudge on the paper!</div>
                     <div class="story-text">Tom looks at the clock. Only thirty seconds left! He needs help.</div>
-                    <div class="dialogue">"Can I borrow your rubber, please?" he asks.</div>
-                    <div class="dialogue">"Sure," says Anna. "Here you are."</div>
+                    <div class="dialogue">“Can I borrow your rubber, please?” he asks.</div>
+                    <div class="dialogue">“Sure,” says Anna. “Here you are.”</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141507_Samsung Internet.jpg"></div>
                 </div>
             </div>
-            
+
             <!-- Page 5 -->
             <div class="page" data-page="5">
                 <div class="front">
-                    <div class="story-text">Tom uses Anna's cloud-shaped rubber. He rubs out the smudge.</div>
-                    <div class="dialogue">"Thank you," says Tom.</div>
-                    <div class="dialogue">"You're welcome," says Anna.</div>
+                    <div class="story-text">Tom uses Anna’s cloud-shaped rubber. He rubs out the smudge.</div>
+                    <div class="dialogue">“Thank you,” says Tom.</div>
+                    <div class="dialogue">“You’re welcome,” says Anna.</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141516_Samsung Internet.jpg"></div>
                 </div>
                 <div class="back">
                     <div class="story-text">Tom finishes his drawing just in time.</div>
                     <div class="story-text">Hurrah! Anna is happy to help her friend.</div>
-                    <div class="story-text">Tom's drawing is definitely the best in the class! Hurrah!</div>
+                    <div class="story-text">Tom’s drawing is definitely the best in the class! Hurrah!</div>
                     <div class="page-image" data-src="videos/Screenshot_20251005_141521_Samsung Internet.jpg"></div>
                 </div>
             </div>
         </div>
-        
-        <!-- Navigation buttons -->
+
         <div class="navigation">
             <button id="prev-btn" class="nav-btn" disabled>Back</button>
             <button id="next-btn" class="nav-btn">Next</button>
         </div>
     </div>
 
-    <!-- Аудиоплеер -->
     <div class="audio-player-container">
         <div class="audio-title">🔊 Story Audio</div>
         <audio controls>
@@ -380,57 +323,35 @@
             const nextBtn = document.getElementById('next-btn');
             let currentPage = 0;
             const totalPages = pages.length;
-            
-            // Function to preload images
+
             function preloadImages() {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     let loadedCount = 0;
                     const totalImages = pageImages.length;
-                    
-                    if (totalImages === 0) {
-                        resolve();
-                        return;
-                    }
-                    
+                    if (totalImages === 0) resolve();
                     pageImages.forEach(imgElement => {
-                        const imgSrc = imgElement.getAttribute('data-src');
+                        const src = imgElement.getAttribute('data-src');
                         const img = new Image();
-                        
-                        img.onload = function() {
-                            imgElement.style.backgroundImage = `url('${imgSrc}')`;
+                        img.onload = () => {
+                            imgElement.style.backgroundImage = `url('${src}')`;
                             imgElement.classList.add('loaded');
-                            loadedCount++;
-                            
-                            if (loadedCount === totalImages) {
-                                resolve();
-                            }
+                            if (++loadedCount === totalImages) resolve();
                         };
-                        
-                        img.onerror = function() {
-                            console.error(`Failed to load image: ${imgSrc}`);
-                            imgElement.style.background = '#f0f0f0';
-                            imgElement.style.display = 'flex';
-                            imgElement.innerHTML = '<p>Image not found</p>';
-                            imgElement.classList.add('loaded');
-                            loadedCount++;
-                            
-                            if (loadedCount === totalImages) {
-                                resolve();
-                            }
+                        img.onerror = () => {
+                            imgElement.style.background = '#eee';
+                            imgElement.textContent = 'Image not found';
+                            if (++loadedCount === totalImages) resolve();
                         };
-                        
-                        img.src = imgSrc;
+                        img.src = src;
                     });
                 });
             }
-            
-            // Function to update button states
+
             function updateButtons() {
                 prevBtn.disabled = currentPage === 0;
                 nextBtn.disabled = currentPage === totalPages - 1;
             }
-            
-            // Function to flip to next page
+
             function flipNext() {
                 if (currentPage < totalPages - 1) {
                     pages[currentPage].classList.add('flipped');
@@ -438,8 +359,7 @@
                     updateButtons();
                 }
             }
-            
-            // Function to flip to previous page
+
             function flipPrev() {
                 if (currentPage > 0) {
                     currentPage--;
@@ -447,31 +367,16 @@
                     updateButtons();
                 }
             }
-            
-            // Initialize the book after images are loaded
+
             preloadImages().then(() => {
-                // Hide loading indicator and show book
                 loadingElement.style.display = 'none';
                 bookContainer.style.display = 'block';
-                
-                // Add click handlers to each page (forward only)
-                pages.forEach((page, index) => {
-                    page.addEventListener('click', function() {
-                        if (index === currentPage) {
-                            flipNext();
-                        }
-                    });
-                });
-                
-                // Button handlers
+                pages.forEach((page, i) => page.addEventListener('click', () => {
+                    if (i === currentPage) flipNext();
+                }));
                 prevBtn.addEventListener('click', flipPrev);
                 nextBtn.addEventListener('click', flipNext);
-                
-                // Initialize button states
                 updateButtons();
-            }).catch(error => {
-                console.error('Error loading images:', error);
-                loadingElement.textContent = 'Error loading book. Please refresh the page.';
             });
         });
     </script>
