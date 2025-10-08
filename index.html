@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Activities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, rgba(106, 13, 173, 0.8), rgba(170, 51, 255, 0.7));
+            position: relative;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(106, 13, 173, 0.6), 
+                rgba(170, 51, 255, 0.5),
+                rgba(255, 0, 255, 0.4));
+            z-index: -1;
+            animation: colorShift 10s infinite alternate;
+        }
+
+        @keyframes colorShift {
+            0% {
+                background: linear-gradient(135deg, 
+                    rgba(106, 13, 173, 0.6), 
+                    rgba(170, 51, 255, 0.5),
+                    rgba(255, 0, 255, 0.4));
+            }
+            50% {
+                background: linear-gradient(135deg, 
+                    rgba(170, 51, 255, 0.6), 
+                    rgba(106, 13, 173, 0.5),
+                    rgba(200, 0, 255, 0.4));
+            }
+            100% {
+                background: linear-gradient(135deg, 
+                    rgba(106, 13, 173, 0.6), 
+                    rgba(170, 51, 255, 0.5),
+                    rgba(150, 0, 255, 0.4));
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin: 30px 0;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px 0;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .menu-item p {
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            width: 100%;
+        }
+
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-item a {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .menu-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay muted loop id="bgVideo">
+            <!-- Видео будет установлено через JavaScript -->
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1>Educational Activities</h1>
+            <p>Choose an activity to begin your learning journey</p>
+        </header>
+
+        <div class="menu-grid">
+            <div class="menu-item">
+                <a href="story.html">Fruit Drawing Contest</a>
+                <p>Showcase your artistic talent with fruits</p>
+            </div>
+            <div class="menu-item">
+                <a href="riddles.html">Riddles</a>
+                <p>Challenge your mind with tricky puzzles</p>
+            </div>
+            <div class="menu-item">
+                <a href="dice challenge.html">Dice Challenge</a>
+                <p>Test your luck and strategy</p>
+            </div>
+            <div class="menu-item">
+                <a href="matching task.html">Matching Task</a>
+                <p>Connect related items in this memory game</p>
+            </div>
+            <div class="menu-item">
+                <a href="dialogue practice.html">Dialogue Practice</a>
+                <p>Improve your conversation skills</p>
+            </div>
+            <div class="menu-item">
+                <a href="song.html">Song Time</a>
+                <p>Enjoy music and learn through lyrics</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Educational Platform &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // Список видео для фона
+        const videos = [
+            'videos/GigaChat_Video-15.mp4',
+            'videos/GigaChat_Video-10.mp4',
+            'videos/GigaChat_Video-9.mp4',
+            'videos/GigaChat_Video-8.mp4'
+        ];
+        
+        // Выбираем случайное видео
+        const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+        
+        // Устанавливаем выбранное видео как фон
+        document.getElementById('bgVideo').src = randomVideo;
+        
+        // Обработка ошибок загрузки видео
+        document.getElementById('bgVideo').addEventListener('error', function() {
+            console.error('Error loading video:', randomVideo);
+            // Если видео не загрузилось, можно попробовать другое
+            const fallbackVideo = videos.filter(v => v !== randomVideo)[0];
+            if (fallbackVideo) {
+                document.getElementById('bgVideo').src = fallbackVideo;
+            }
+        });
+    </script>
+</body>
+</html>
